@@ -4,6 +4,7 @@ from Data.users import User
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from form.register import RegisterForm
 from form.login import LoginForm
+import os
 
 
 app = Flask(__name__)
@@ -20,7 +21,7 @@ def index():
 @app.route('/main')
 def main():
     db_sess = db_session.create_session()
-    return render_template('main')
+    return render_template('main.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -62,7 +63,7 @@ def login():
 
 
 def main():
-    db_session.global_init('db/baza.db')
+    db_session.global_init('db/users.db')
     app.run()
 
 

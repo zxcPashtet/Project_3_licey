@@ -1,0 +1,11 @@
+.learn_more {
+  position: absolute;
+  font-size: 50px;
+  background: none;
+  border-radius: 30px;
+  top: 170px;
+  .button:hover {
+      background-color:#002ead;
+      transition: 0.7s;
+  }
+}
