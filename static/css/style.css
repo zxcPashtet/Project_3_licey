@@ -9,20 +9,6 @@
     max-width: 50%;
 }
 
-.button-submit {
-    width: 200px;
-    color: white;
-    background-color: #696969;
-    border: none;
-    font-size: 0.875rem;
-    font-weight: 500;
-    border-radius: 0.5rem;
-    padding: 0.625rem;
-    cursor: pointer;
-    text-align: center;
-    box-sizing: border-box;
-}
-
 .button-changing-input-mode {
     width: 200px;
     color: white;
@@ -40,6 +26,12 @@
                 display: flex;
                 margin-top: 40px;
 }
+.button-row {
+  text-align: center;
+}
+.button-row1 {
+    text-align: center;
+}
 .space-around{
                 justify-content: space-around;
             }
@@ -56,4 +48,32 @@
     width: 350px;
     font-size: 1.3rem;
     margin-top: 10px;
+}
+.card-text-2 {
+    width: 300px;
+    text-align: left;
+    color: #000000;
+    margin: 0 auto;
+    width: 350px;
+    font-size: 1.3rem;
+    margin-top: 10px;
+    margin-center: auto;
+}
+.card-text-1 {
+    width: 300px;
+    text-align: left;
+    color: #000000;
+    margin: 0 auto;
+    width: 350px;
+    font-size: 1.3rem;
+    margin-top: 10px;
+}
+.button-row button {
+  display: inline-block;
+  margin-right: 10px;
+}
+.button-row1 button {
+  display: inline-block;
+  margin-right: 10px;
+  margin-top: 179px;
 }

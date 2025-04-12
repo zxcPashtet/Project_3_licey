@@ -1,29 +1,35 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Авторизация</h1>
-<form action="" method="post">
+<form class="form" action="" method="post">
     {{ form.hidden_tag() }}
-    <p>
-        {{ form.email.label }}<br>
-        {{ form.email(class="form-control", type="email")}}<br>
-        {% for error in form.email.errors %}
-            <div class="alert alert-danger" role="alert">
-                {{ error }}
-            </div>
-        {% endfor %}
-    </p>
-    <p>
-        {{ form.password.label }}<br>
-        {{ form.password(class="form-control", type="password")}}<br>
-        {% for error in form.password.errors %}
-            <div class="alert alert-danger" role="alert">
-                {{ error }}
-            </div>
-        {% endfor %}
-    </p>
-    <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
-    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
-    <div>{{ message }}</div>
+    <div class="card-text-bg-primary-mb-3" style="max-width: 40rem;">
+    <div class="card-header"><h1 id="Register_h1">Авторизация</h1></div>
+    <div class="card-body">
+        <p class="card-text-1">
+            {{ form.email.label }}<br>
+            {{ form.email(class="form-control", type="email")}}<br>
+            {% for error in form.email.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        </p>
+        <p class="card-text-1">
+            {{ form.password.label }}<br>
+            {{ form.password(class="form-control", type="password")}}<br>
+            {% for error in form.password.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endfor %}
+
+        <p class="card-text-2">{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+        <div class="button-row1">
+            <button type="submit" class="button-changing-input-mode">Подтвердить</button>
+            <a href="http://127.0.0.1:5000/register">
+                <button type="button" class="button-changing-input-mode">Регистрация</button>
+        <div>{{ message }}</div>
+        </div>
 </form>
 {% endblock %}

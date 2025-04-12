@@ -5,6 +5,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from form.register import RegisterForm
 from form.login import LoginForm
 
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'zxcmodePashtetAndShniga'
 login_manager = LoginManager()
@@ -14,7 +15,12 @@ login_manager.init_app(app)
 @app.route('/')
 def index():
     db_sess = db_session.create_session()
-    return render_template('base.html')
+    return redirect('/login')
+
+@app.route('/main')
+def main():
+    db_sess = db_session.create_session()
+    return render_template('main')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -32,7 +38,7 @@ def register():
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
-        return redirect('/')
+        return redirect('/main')
     return render_template('register.html', title='Регистрация', form=form)
 
 
@@ -50,7 +56,7 @@ def login():
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            return redirect('/')
+            return redirect('/main')
         return render_template('login.html', form=form, message='Неправльный логин или пароль')
     return render_template('login.html', title='Авторизация', form=form)
 
