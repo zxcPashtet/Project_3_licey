@@ -5,11 +5,29 @@
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',
   filename='css/style_2.css') }}">
+      <meta charset="utf-8">
     </head>
     <body>
       <div>
         <div style="background-color: #4a545c; width: 35%; height: 1500px; float:left;" class="scroll">
-          <button class="learn_more"> >> </button>
+          <button type="button" class="learn_more" onclick="window.myDialog.show()">
+              ☰
+            </button>
+          <dialog id="myDialog" class="dialog-class">
+            <div class="button-row">
+              <button type="button" class="close_and_settings_button">⚙️</button>
+              <button type="button" class="close_and_settings_button" onclick="window.myDialog.close()">❌</button>
+            </div>
+            <div class="avatar_name">
+              <img src="/static/img/free-icon-barrels-18823502.png" alt="" class="round">
+                <p>{{ current_user.surname }} {{ current_user.name }}</p>
+            </div>
+            <div class="button-row1">
+              <button type="button" class="tema_button">☀️ тема</button>
+              <button type="button" class="tema_button">🌑 тема</button>
+            </div>
+
+          </dialog>
         </div>
         <div style="background-color: #979aaa; width:65%; height: 1500px; float:left;">
         </div>

@@ -1,9 +1,10 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request, abort
 from Data import db_session
 from Data.users import User
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from form.register import RegisterForm
 from form.login import LoginForm
+from form.about_me import AboutForm
 import os
 
 
@@ -18,10 +19,39 @@ def index():
     db_sess = db_session.create_session()
     return redirect('/login')
 
-@app.route('/main')
-def main():
-    db_sess = db_session.create_session()
-    return render_template('main.html')
+
+@app.route('/main', methods=['GET', 'POST'])
+@login_required
+def main_page():
+    form = AboutForm()
+    if request.method == "GET":
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).filter(User.id == current_user.id).first()
+        if user:
+            form.about_me.data = user.about_me
+            form.name.data = user.name
+            form.surname.data = user.surname
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).filter(User.id == current_user.id).first()
+        if user:
+            form.about_me.data = user.about_me
+            form.name.data = user.name
+            form.surname.data = user.surname
+            db_sess.commit()
+            return redirect('/main')
+        else:
+            abort(404)
+    return render_template('main.html', form=form)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect('/login')
 
 
 @app.route('/register', methods=['GET', 'POST'])

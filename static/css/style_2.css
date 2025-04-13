@@ -9,3 +9,60 @@
       transition: 0.7s;
   }
 }
+.dialog-class {
+position: absolute;
+  font-size: 50px;
+  background-color: #4a545c;
+  border-radius: 30px;
+  width: 800px;
+  height: 900px;
+  top: 300px;
+}
+.button-row1 button {
+  display: inline-block;
+  margin-right: 5px;
+  margin-top: 400px;
+}
+.button-row button {
+  display: inline-block;
+  margin-right: 5px;
+}
+.button-row1 {
+  text-align: center;
+}
+.button-row {
+   margin-left: 430px;
+}
+.tema_button {
+  width: 300px;
+  font-size: 50px;
+  background-color: #979aaa;
+  border-radius: 30px;
+  text-align: center;
+  font-size: 40px;
+  top: 600px;
+}
+.close_and_settings_button {
+  width: 100px;
+  font-size: 50px;
+  background-color: #979aaa;
+  border-radius: 30px;
+  text-align: center;
+  font-size: 40px;
+
+}
+.round {
+    border-radius: 100px;
+    border: 5px solid black;
+    box-shadow: 0 0 7px #666;
+    width: 200px;
+    height: 160px;
+   }
+.avatar_name {
+  text-align: center;
+  display: inline-block;
+  margin-right: 5px;
+  left: 30%;
+  margin-left: 30%;
+  font-size: 40px;
+}
