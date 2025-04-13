@@ -7,12 +7,17 @@
   filename='css/style_2.css') }}">
       <meta charset="utf-8">
     </head>
-    <body>
+    <body style="overflow: hidden">
       <div>
-        <div style="background-color: #4a545c; width: 35%; height: 1500px; float:left;" class="scroll">
-          <button type="button" class="learn_more" onclick="window.myDialog.show()">
-              ☰
+        <div class="block_left">
+          <div>
+            <button type="button" class="learn_more" onclick="window.myDialog.show()">
+                ☰
             </button>
+            <div class="mb-3">
+              <textarea class="user_search" rows="1" placeholder="Поиск"></textarea>
+            </div>
+          </div>
           <dialog id="myDialog" class="dialog-class">
             <div class="button-row">
               <button type="button" class="close_and_settings_button">⚙️</button>
@@ -26,10 +31,9 @@
               <button type="button" class="tema_button">☀️ тема</button>
               <button type="button" class="tema_button">🌑 тема</button>
             </div>
-
           </dialog>
         </div>
-        <div style="background-color: #979aaa; width:65%; height: 1500px; float:left;">
+        <div class="block_right">
         </div>
       </div>
     </body>

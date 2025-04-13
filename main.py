@@ -93,9 +93,10 @@ def login():
 
 
 def main():
-    db_session.global_init('db/users.db')
+    db_session.global_init('db/forproject3.db')
     app.run()
 
 
 if __name__ == '__main__':
     main()
+    #db_session.global_init('db/forproject3.db')

@@ -1,13 +1,9 @@
 .learn_more {
   position: absolute;
-  font-size: 50px;
-  background: none;
+  font-size: 35px;
+  background: #1d334a;
   border-radius: 30px;
-  top: 170px;
-  .button:hover {
-      background-color:#002ead;
-      transition: 0.7s;
-  }
+  top: 30px;
 }
 .dialog-class {
 position: absolute;
@@ -16,7 +12,7 @@ position: absolute;
   border-radius: 30px;
   width: 800px;
   height: 900px;
-  top: 300px;
+  top: 30px;
 }
 .button-row1 button {
   display: inline-block;
@@ -65,4 +61,27 @@ position: absolute;
   left: 30%;
   margin-left: 30%;
   font-size: 40px;
+}
+.block_left {
+  width: 27%;
+  height: 1300px;
+  overflow-y: scroll;
+  float: left;
+  background: #23282b;
+  }
+.block_right {
+  width: 73%;
+  height: 1300px;
+  overflow-y: scroll;
+  background: #1d334a;
+  }
+.user_search{
+  position: absolute;
+  resize: none;
+  left: 80px;
+  top: 34px;
+  width: 350px;
+  border-radius: 20px;
+  font-size:30px;
+  background: #1d334a;
 }
