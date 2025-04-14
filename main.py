@@ -4,7 +4,7 @@ from Data.users import User
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from form.register import RegisterForm
 from form.login import LoginForm
-from form.about_me import AboutForm
+from form.aboutme import AboutForm
 import os
 
 
@@ -16,32 +16,31 @@ login_manager.init_app(app)
 
 @app.route('/')
 def index():
-    db_sess = db_session.create_session()
     return redirect('/login')
 
 
-@app.route('/main', methods=['GET', 'POST'])
+@app.route('/main/<int:id>', methods=['GET', 'POST'])
 @login_required
-def main_page():
+def main_page(id):
     form = AboutForm()
     if request.method == "GET":
         db_sess = db_session.create_session()
-        user = db_sess.query(User).filter(User.id == current_user.id).first()
-        if user:
-            form.about_me.data = user.about_me
-            form.name.data = user.name
-            form.surname.data = user.surname
+        users = db_sess.query(User).filter((User.id == id)).first()
+        if users:
+            form.name.data = users.name
+            form.surname.data = users.surname
+            form.about_me.data = users.about_me
         else:
             abort(404)
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        user = db_sess.query(User).filter(User.id == current_user.id).first()
-        if user:
-            form.about_me.data = user.about_me
-            form.name.data = user.name
-            form.surname.data = user.surname
+        users = db_sess.query(User).filter((User.id == id)).first()
+        if users:
+            users.name = form.name.data
+            users.surname = form.surname.data
+            users.about_me = form.about_me.data
             db_sess.commit()
-            return redirect('/main')
+            return redirect(f'/main/{current_user.id}')
         else:
             abort(404)
     return render_template('main.html', form=form)
@@ -69,7 +68,7 @@ def register():
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
-        return redirect('/main')
+        return redirect(f'/main/{current_user.id}')
     return render_template('register.html', title='Регистрация', form=form)
 
 
@@ -87,7 +86,7 @@ def login():
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            return redirect('/main')
+            return redirect(f'/main/{current_user.id}')
         return render_template('login.html', form=form, message='Неправльный логин или пароль')
     return render_template('login.html', title='Авторизация', form=form)
 

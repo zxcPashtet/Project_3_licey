@@ -20,20 +20,62 @@
           </div>
           <dialog id="myDialog" class="dialog-class">
             <div class="button-row">
-              <button type="button" class="close_and_settings_button">⚙️</button>
+              <button type="button" class="close_and_settings_button" onclick="window.settingsDialog.show()">⚙️</button>
               <button type="button" class="close_and_settings_button" onclick="window.myDialog.close()">❌</button>
             </div>
             <div class="avatar_name">
               <img src="/static/img/free-icon-barrels-18823502.png" alt="" class="round">
                 <p>{{ current_user.surname }} {{ current_user.name }}</p>
             </div>
+            <div>
+              <p style="font-size: 30px; text-align: center;">Ваша информация</p>
+              {% if current_user.about_me %}
+                <div style="width: 500px; height: 300px; overflow-y: scroll; font-size: 30px;
+                 scrollbar-color: #979aaa #4a545c;">
+                  {{ current_user.about_me }}
+                </div>
+              {% else %}
+              <div style="width: 500px; height: 300px; overflow-y: scroll; font-size: 30px;
+                 scrollbar-color: #979aaa #4a545c; text-align: center;">Пока пусто
+                </div>
+              {% endif %}
+            </div>
             <div class="button-row1">
               <button type="button" class="tema_button">☀️ тема</button>
               <button type="button" class="tema_button">🌑 тема</button>
             </div>
           </dialog>
-        </div>
-        <div class="block_right">
+          <dialog id="settingsDialog" class="dialog-class">
+            <button type="button" style="margin-left: 378px;"
+                    class="close_and_settings_button" onclick="window.settingsDialog.close()">❌</button>
+            <form action="" method="post">
+              {{ form.hidden_tag() }}
+              <p class="card-text-1">{{ form.name.label }}
+                {{ form.name(class="form-control") }} <br>
+                {% for error in form.name.error %}
+                    <p class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </p>
+                {% endfor %}</p>
+              <p class="card-text-1">{{ form.surname.label }}
+                {{ form.surname(class="form-control") }} <br>
+                {% for error in form.surname.error %}
+                    <p class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </p>
+                {% endfor %}</p>
+                <p class="card-text-1">{{ form.about_me.label }}
+                {{ form.about_me(class="form-control") }} <br>
+                {% for error in form.about_me.error %}
+                    <p class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </p>
+                {% endfor %}</p>
+                <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+              </form>
+          </dialog>
+            </div>
+          <div class="block_right">
         </div>
       </div>
     </body>
