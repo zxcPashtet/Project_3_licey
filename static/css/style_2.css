@@ -4,6 +4,7 @@
   background: #1d334a;
   border-radius: 30px;
   top: 20px;
+  color: #808080;
 }
 .dialog-class {
 position: absolute;
@@ -98,6 +99,7 @@ position: absolute;
   border-radius: 20px;
   font-size: 21px;
   background: #1d334a;
+  color: #808080;
 }
 .user_search_submit{
   position: absolute;
@@ -106,7 +108,7 @@ position: absolute;
   border-radius: 20px;
   font-size: 21px;
   background: #1d334a;
-  font-color: #808080;
+  color: #808080;
 }
 .on_main{
   position: absolute;
@@ -115,7 +117,7 @@ position: absolute;
   border-radius: 20px;
   font-size: 21px;
   background: #1d334a;
-  font-color: #808080;
+  color: #808080;
 }
 .result_search{
   position: absolute;
