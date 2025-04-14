@@ -1,9 +1,9 @@
 .learn_more {
   position: absolute;
-  font-size: 35px;
+  font-size: 30px;
   background: #1d334a;
   border-radius: 30px;
-  top: 30px;
+  top: 20px;
 }
 .dialog-class {
 position: absolute;
@@ -77,14 +77,14 @@ position: absolute;
   font-size: 40px;
 }
 .block_left {
-  width: 27%;
+  width: 36%;
   height: 1300px;
   overflow-y: scroll;
   float: left;
   background: #23282b;
   }
 .block_right {
-  width: 73%;
+  width: 64%;
   height: 1300px;
   overflow-y: scroll;
   background: #1d334a;
@@ -92,10 +92,33 @@ position: absolute;
 .user_search{
   position: absolute;
   resize: none;
-  left: 80px;
-  top: 34px;
-  width: 350px;
+  left: 60px;
+  top: 26px;
+  width: 300px;
   border-radius: 20px;
-  font-size:30px;
+  font-size: 21px;
   background: #1d334a;
+}
+.user_search_submit{
+  position: absolute;
+  left: 380px;
+  top: 26px;
+  border-radius: 20px;
+  font-size: 21px;
+  background: #1d334a;
+  font-color: #808080;
+}
+.on_main{
+  position: absolute;
+  left: 540px;
+  top: 26px;
+  border-radius: 20px;
+  font-size: 21px;
+  background: #1d334a;
+  font-color: #808080;
+}
+.result_search{
+  position: absolute;
+  top: 100px;
+  color: #808080;
 }

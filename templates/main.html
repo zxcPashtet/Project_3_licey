@@ -14,9 +14,20 @@
             <button type="button" class="learn_more" onclick="window.myDialog.show()">
                 ☰
             </button>
-            <div class="mb-3">
-              <textarea class="user_search" rows="1" placeholder="Поиск"></textarea>
-            </div>
+            <form method="POST" action="" class="form_user_search">
+              <textarea class="user_search" name="search" rows="1" placeholder="Поиск"></textarea>
+              <button class="user_search_submit" type="submit">Подтвердить</button>
+              <a href="http://127.0.0.1:5000/main/{{ current_user.id }}">
+                <button class="on_main" type="button">Сбросить</button>
+              </a>
+            </form>
+          </div>
+          <div class="result_search">
+            {% if result %}
+              {% for i in found_users %}
+                <h1>{{ i }}</h1>
+              {% endfor %}
+            {% endif %}
           </div>
           <dialog id="myDialog" class="dialog-class">
             <div class="button-row">

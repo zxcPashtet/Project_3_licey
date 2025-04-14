@@ -22,6 +22,7 @@ def index():
 @app.route('/main/<int:id>', methods=['GET', 'POST'])
 @login_required
 def main_page(id):
+    result = ''
     form = AboutForm()
     if request.method == "GET":
         db_sess = db_session.create_session()
@@ -43,6 +44,12 @@ def main_page(id):
             return redirect(f'/main/{current_user.id}')
         else:
             abort(404)
+    if request.method == 'POST':
+        db_sess = db_session.create_session()
+        result = request.form['search']
+        found_users = db_sess.query(User).filter(getattr(User, 'name').ilike(f'{result}%')).all()
+        print(found_users)
+        return render_template('main.html', form=form, result=result, found_users=found_users)
     return render_template('main.html', form=form)
 
 
