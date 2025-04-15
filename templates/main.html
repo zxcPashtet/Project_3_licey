@@ -35,9 +35,9 @@
               <button type="button" class="close_and_settings_button" onclick="window.myDialog.close()">❌</button>
             </div>
             <div class="avatar_name">
-              <img src="/static/img/free-icon-barrels-18823502.png" alt="" class="round">
-                <p>{{ current_user.surname }} {{ current_user.name }}</p>
+              <img src="{{ url_for('get_image', image_id=current_user.id) }}" alt="" class="round">
             </div>
+                <p style="text-align: center;">{{ current_user.name }} {{ current_user.surname }}</p>
             <div>
               <p style="font-size: 30px; text-align: center;">Ваша информация</p>
               {% if current_user.about_me %}
@@ -84,6 +84,11 @@
                 {% endfor %}</p>
                 <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
               </form>
+            <form action = "" method = "POST"
+                  enctype = "multipart/form-data">
+               <input type="file" name="file">
+              <a href="http://127.0.0.1:5000/main/{{ current_user.id }}"><button type="submit">Загрузить</button></a>
+             </form>
           </dialog>
             </div>
           <div class="block_right">

@@ -1,15 +1,18 @@
-from flask import Flask, render_template, redirect, request, abort
+from flask import Flask, render_template, redirect, request, abort, send_file
 from Data import db_session
 from Data.users import User
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from form.register import RegisterForm
 from form.login import LoginForm
 from form.aboutme import AboutForm
-import os
+from os.path import join, dirname, realpath
+import io
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'zxcmodePashtetAndShniga'
+UPLOADS_PATH = join(dirname(realpath(__file__)), 'static\\img')
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -17,6 +20,13 @@ login_manager.init_app(app)
 @app.route('/')
 def index():
     return redirect('/login')
+
+
+@app.route('/image/<int:image_id>')
+def get_image(image_id):
+    db_sess = db_session.create_session()
+    img = db_sess.query(User).filter((User.id == image_id)).first()
+    return send_file(io.BytesIO(img.avatar), mimetype='image/png')
 
 
 @app.route('/main/<int:id>', methods=['GET', 'POST'])
@@ -45,12 +55,20 @@ def main_page(id):
         else:
             abort(404)
     if request.method == 'POST':
+        if request.files['file'].filename != '':
+            db_sess = db_session.create_session()
+            file = request.files['file']
+            avatar_data = file.read()
+            avatar_users = db_sess.query(User).filter((User.id == id)).first()
+            avatar_users.avatar = avatar_data
+            db_sess.commit()
+            return render_template('main.html', form=form, result=result)
+        return render_template('main.html', form=form, result=result)
         db_sess = db_session.create_session()
         result = request.form['search']
         found_users = db_sess.query(User).filter(getattr(User, 'name').ilike(f'{result}%')).all()
-        print(found_users)
         return render_template('main.html', form=form, result=result, found_users=found_users)
-    return render_template('main.html', form=form)
+    return render_template('main.html', form=form, result=result)
 
 
 @app.route('/logout')
@@ -67,10 +85,13 @@ def register():
         db_sess = db_session.create_session()
         if db_sess.query(User).filter(User.email == form.email.data).first():
             return render_template('register.html', title='Регистрация', form=form, message='Такой пользователь уже есть')
+        with open('static/img/maxresdefault.jpg', 'rb') as img_file:
+            avatar_data = img_file.read()
         user = User(
             name=form.name.data,
             surname=form.surname.data,
-            email=form.email.data
+            email=form.email.data,
+            avatar=avatar_data
         )
         user.set_password(form.password.data)
         db_sess.add(user)

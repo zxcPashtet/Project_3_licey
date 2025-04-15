@@ -13,7 +13,7 @@ class User(SQlAlchemyBase, UserMixin, SerializerMixin):
     surname = sqlalchemy.Column(sqlalchemy.String)
     name = sqlalchemy.Column(sqlalchemy.String)
     friends = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    avatar = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    avatar = sqlalchemy.Column(sqlalchemy.LargeBinary, nullable=True)
     topic = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     about_me = sqlalchemy.Column(sqlalchemy.String, unique=True, nullable=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)

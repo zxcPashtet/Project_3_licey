@@ -12,13 +12,14 @@ position: absolute;
   background-color: #4a545c;
   border-radius: 30px;
   width: 600px;
-  height: 800px;
-  top: 30px;
+  height: 1200px;
+  top: -20px;
+  left: 71%;
 }
 .button-row1 button {
   display: inline-block;
   margin-right: 5px;
-  margin-top: 50px;
+  margin-top: 300px;
 }
 .button-row button {
   display: inline-block;
@@ -73,9 +74,10 @@ position: absolute;
   text-align: center;
   display: inline-block;
   margin-right: 5px;
-  left: 15%;
-  margin-left: 15%;
+  left: 40%;
+  margin-left: 40%;
   font-size: 40px;
+  margin-top: 70px;
 }
 .block_left {
   width: 36%;
