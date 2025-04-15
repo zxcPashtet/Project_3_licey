@@ -55,19 +55,19 @@ def main_page(id):
         else:
             abort(404)
     if request.method == 'POST':
-        if request.files['file'].filename != '':
-            db_sess = db_session.create_session()
+        db_sess = db_session.create_session()
+        if 'file' in request.files and request.files['file'].filename != '':
             file = request.files['file']
             avatar_data = file.read()
             avatar_users = db_sess.query(User).filter((User.id == id)).first()
-            avatar_users.avatar = avatar_data
-            db_sess.commit()
+            if avatar_users:
+                avatar_users.avatar = avatar_data
+                db_sess.commit()
             return render_template('main.html', form=form, result=result)
-        return render_template('main.html', form=form, result=result)
-        db_sess = db_session.create_session()
-        result = request.form['search']
-        found_users = db_sess.query(User).filter(getattr(User, 'name').ilike(f'{result}%')).all()
-        return render_template('main.html', form=form, result=result, found_users=found_users)
+        elif request.form.get('search'):
+            result = request.form['search']
+            found_users = db_sess.query(User).filter(getattr(User, 'name').ilike(f'{result}%')).all()
+            return render_template('main.html', form=form, result=result, found_users=found_users)
     return render_template('main.html', form=form, result=result)
 
 
