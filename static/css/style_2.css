@@ -5,6 +5,7 @@
   top: 20px;
   color: #808080;
 }
+
 .dialog-class {
 position: absolute;
   font-size: 50px;
@@ -14,26 +15,32 @@ position: absolute;
   top: -20px;
   left: 71%;
 }
+
 .button-row1 button {
   display: inline-block;
   margin-right: 5px;
   margin-top: 300px;
 }
+
 .button-row button {
   display: inline-block;
   margin-right: 5px;
 }
+
 .button-row1 {
   text-align: center;
 }
+
 .button-row {
    text-align: center;
    margin-left: 250px;
 }
+
 .text_about_me {
     font-size: 30px;
     text-align: center;
 }
+
 .tema_button {
   width: 200px;
   font-size: 50px;
@@ -42,6 +49,7 @@ position: absolute;
   font-size: 40px;
   top: 300px;
 }
+
 .card-text-1 {
     width: 300px;
     text-align: left;
@@ -51,6 +59,7 @@ position: absolute;
     font-size: 1.3rem;
     margin-top: 10px;
 }
+
 .close_and_settings_button {
   width: 70px;
   font-size: 50px;
@@ -59,13 +68,15 @@ position: absolute;
   font-size: 40px;
 
 }
+
 .round {
     border-radius: 100px;
     border: 5px solid black;
     box-shadow: 0 0 7px #666;
     width: 100px;
     height: 100px;
-   }
+}
+
 .avatar_name {
   text-align: center;
   display: inline-block;
@@ -75,17 +86,20 @@ position: absolute;
   font-size: 40px;
   margin-top: 70px;
 }
+
 .block_left {
   width: 36%;
   height: 1300px;
   overflow-y: scroll;
   float: left;
   }
+
 .block_right {
   width: 64%;
   height: 1300px;
   overflow-y: scroll;
   }
+
 .user_search{
   position: absolute;
   resize: none;
@@ -96,6 +110,7 @@ position: absolute;
   font-size: 21px;
   color: #808080;
 }
+
 .user_search_submit{
   position: absolute;
   left: 380px;
@@ -104,6 +119,7 @@ position: absolute;
   font-size: 21px;
   color: #808080;
 }
+
 .on_main{
   position: absolute;
   left: 540px;
@@ -112,8 +128,45 @@ position: absolute;
   font-size: 21px;
   color: #808080;
 }
+
 .result_search{
-  position: absolute;
-  top: 100px;
-  color: #808080;
+  display: flex;
+  justify-content: center;
+  margin-top: 100px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.found-users{
+  width: 500px;
+  height: 75px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 30px;
+}
+
+.image-container {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.button-text {
+  flex: 1;
 }

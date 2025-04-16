@@ -25,7 +25,12 @@
           <div class="result_search">
             {% if result %}
               {% for i in found_users %}
-                <h1>{{ i }}</h1>
+                <button class="found-users" style="background: {{ background[1] }}">
+                  <span class="image-container">
+                    <img src="{{ url_for('get_image', image_id=current_user.id) }}" alt="Иконка">
+                  </span>
+                  <span class="button-text">{{ i.name }}</span>
+                </button><br>
               {% endfor %}
             {% endif %}
           </div>
