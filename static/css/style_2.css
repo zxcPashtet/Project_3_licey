@@ -1,7 +1,6 @@
 .learn_more {
   position: absolute;
   font-size: 30px;
-  background: #1d334a;
   border-radius: 30px;
   top: 20px;
   color: #808080;
@@ -9,7 +8,6 @@
 .dialog-class {
 position: absolute;
   font-size: 50px;
-  background-color: #4a545c;
   border-radius: 30px;
   width: 600px;
   height: 1200px;
@@ -39,7 +37,6 @@ position: absolute;
 .tema_button {
   width: 200px;
   font-size: 50px;
-  background-color: #979aaa;
   border-radius: 30px;
   text-align: center;
   font-size: 40px;
@@ -57,7 +54,6 @@ position: absolute;
 .close_and_settings_button {
   width: 70px;
   font-size: 50px;
-  background-color: #979aaa;
   border-radius: 30px;
   text-align: center;
   font-size: 40px;
@@ -84,13 +80,11 @@ position: absolute;
   height: 1300px;
   overflow-y: scroll;
   float: left;
-  background: #23282b;
   }
 .block_right {
   width: 64%;
   height: 1300px;
   overflow-y: scroll;
-  background: #1d334a;
   }
 .user_search{
   position: absolute;
@@ -100,7 +94,6 @@ position: absolute;
   width: 300px;
   border-radius: 20px;
   font-size: 21px;
-  background: #1d334a;
   color: #808080;
 }
 .user_search_submit{
@@ -109,7 +102,6 @@ position: absolute;
   top: 26px;
   border-radius: 20px;
   font-size: 21px;
-  background: #1d334a;
   color: #808080;
 }
 .on_main{
@@ -118,7 +110,6 @@ position: absolute;
   top: 26px;
   border-radius: 20px;
   font-size: 21px;
-  background: #1d334a;
   color: #808080;
 }
 .result_search{

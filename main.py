@@ -33,9 +33,12 @@ def get_image(image_id):
 @login_required
 def main_page(id):
     result = ''
+    db_sess = db_session.create_session()
+    users = db_sess.query(User).filter((User.id == id)).first()
+    background = users.topic.split()
+    print(background)
     form = AboutForm()
     if request.method == "GET":
-        db_sess = db_session.create_session()
         users = db_sess.query(User).filter((User.id == id)).first()
         if users:
             form.name.data = users.name
@@ -44,7 +47,6 @@ def main_page(id):
         else:
             abort(404)
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
         users = db_sess.query(User).filter((User.id == id)).first()
         if users:
             users.name = form.name.data
@@ -55,20 +57,34 @@ def main_page(id):
         else:
             abort(404)
     if request.method == 'POST':
-        db_sess = db_session.create_session()
-        if 'file' in request.files and request.files['file'].filename != '':
+        if request.form.get("light_tema"):
+            background = ['#808080', '#808080', '#808080', '#808080']
+            users = db_sess.query(User).filter((User.id == id)).first()
+            if users:
+                users.topic = ' '.join(background)
+                db_sess.commit()
+            return render_template('main.html', form=form, result=result, background=background)
+        elif request.form.get("night_tema"):
+            background = ['#23282b', '#1d334a', '#4a545c', '#979aaa']
+            users = db_sess.query(User).filter((User.id == id)).first()
+            if users:
+                users.topic = ' '.join(background)
+                db_sess.commit()
+            return render_template('main.html', form=form, result=result, background=background)
+        elif 'file' in request.files and request.files['file'].filename != '':
             file = request.files['file']
             avatar_data = file.read()
             avatar_users = db_sess.query(User).filter((User.id == id)).first()
             if avatar_users:
                 avatar_users.avatar = avatar_data
                 db_sess.commit()
-            return render_template('main.html', form=form, result=result)
+            return render_template('main.html', form=form, result=result, background=background)
         elif request.form.get('search'):
             result = request.form['search']
             found_users = db_sess.query(User).filter(getattr(User, 'name').ilike(f'{result}%')).all()
-            return render_template('main.html', form=form, result=result, found_users=found_users)
-    return render_template('main.html', form=form, result=result)
+            return render_template('main.html', form=form, result=result, found_users=found_users,
+                                   background=background)
+    return render_template('main.html', form=form, result=result, background=background)
 
 
 @app.route('/logout')
@@ -91,7 +107,8 @@ def register():
             name=form.name.data,
             surname=form.surname.data,
             email=form.email.data,
-            avatar=avatar_data
+            avatar=avatar_data,
+            topic='#23282b #1d334a #4a545c #979aaa'
         )
         user.set_password(form.password.data)
         db_sess.add(user)

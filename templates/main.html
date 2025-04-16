@@ -9,16 +9,16 @@
     </head>
     <body style="overflow: hidden">
       <div>
-        <div class="block_left">
+        <div class="block_left" style="background: {{ background[0] }}">
           <div>
-            <button type="button" class="learn_more" onclick="window.myDialog.show()">
+            <button type="button" class="learn_more" onclick="window.myDialog.show()" style="background:  {{ background[1] }}">
                 ☰
             </button>
             <form method="POST" action="" class="form_user_search">
-              <textarea class="user_search" name="search" rows="1" placeholder="Поиск"></textarea>
-              <button class="user_search_submit" type="submit">Подтвердить</button>
+              <textarea class="user_search" name="search" style="background: {{ background[1] }}" rows="1" placeholder="Поиск"></textarea>
+              <button class="user_search_submit" style="background: {{ background[1] }}" type="submit">Подтвердить</button>
               <a href="http://127.0.0.1:5000/main/{{ current_user.id }}">
-                <button class="on_main" type="button">Сбросить</button>
+                <button class="on_main" style="background: {{ background[1] }}" type="button">Сбросить</button>
               </a>
             </form>
           </div>
@@ -29,10 +29,12 @@
               {% endfor %}
             {% endif %}
           </div>
-          <dialog id="myDialog" class="dialog-class">
+          <dialog id="myDialog" class="dialog-class" style="background-color: {{ background[2] }}">
             <div class="button-row">
-              <button type="button" class="close_and_settings_button" onclick="window.settingsDialog.show()">⚙️</button>
-              <button type="button" class="close_and_settings_button" onclick="window.myDialog.close()">❌</button>
+              <button type="button" class="close_and_settings_button" style="background-color: {{ background[3] }}"
+                      onclick="window.settingsDialog.show()">⚙️</button>
+              <button type="button" class="close_and_settings_button" style="background-color: {{ background[3] }}"
+                      onclick="window.myDialog.close()">❌</button>
             </div>
             <div class="avatar_name">
               <img src="{{ url_for('get_image', image_id=current_user.id) }}" alt="" class="round">
@@ -52,11 +54,15 @@
               {% endif %}
             </div>
             <div class="button-row1">
-              <button type="button" class="tema_button">☀️ тема</button>
-              <button type="button" class="tema_button">🌑 тема</button>
+              <form method ="post" action="">
+                <button type="submit" class="tema_button" name="light_tema" value="light_tema"
+                        style="background-color:  {{ background[3] }}">☀️ тема</button>
+                <button type="submit" class="tema_button" name="night_tema" value="night_tema"
+                        style="background-color:  {{ background[3] }}">🌑 тема</button>
+              </form>
             </div>
           </dialog>
-          <dialog id="settingsDialog" class="dialog-class">
+          <dialog id="settingsDialog" class="dialog-class" style="background-color: {{ background[2] }}">
             <button type="button" style="margin-left: 378px;"
                     class="close_and_settings_button" onclick="window.settingsDialog.close()">❌</button>
             <form action="" method="post">
@@ -91,7 +97,7 @@
              </form>
           </dialog>
             </div>
-          <div class="block_right">
+          <div class="block_right" style="background: {{ background[1] }}">
         </div>
       </div>
     </body>
