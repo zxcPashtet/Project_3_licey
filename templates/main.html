@@ -23,14 +23,17 @@
             </form>
           </div>
           <div class="result_search">
-            {% if result %}
+            {% if found_users %}
               {% for i in found_users %}
-                <button class="found-users" style="background: {{ background[1] }}">
-                  <span class="image-container">
-                    <img src="{{ url_for('get_image', image_id=current_user.id) }}" alt="Иконка">
-                  </span>
-                  <span class="button-text">{{ i.name }}</span>
-                </button><br>
+                <form method ="post" action="">
+                  <button class="found-users" style="background: {{ background[1] }}" name="user-button"
+                          value="{{ i.login }}">
+                    <span class="image-container">
+                      <img src="{{ url_for('get_image', image_id=current_user.id) }}" alt="Иконка">
+                    </span>
+                    <span class="button-text">{{ i.name }} {{ i.surname }}</span>
+                  </button><br>
+                </form>
               {% endfor %}
             {% endif %}
           </div>
@@ -99,10 +102,17 @@
                   enctype = "multipart/form-data">
                <input type="file" name="file">
               <a href="http://127.0.0.1:5000/main/{{ current_user.id }}"><button type="submit">Загрузить</button></a>
-             </form>
+            </form>
           </dialog>
+        </div>
+        <div class="block_right" style="background: {{ background[1] }}">
+          {% if chat %}
+            <div class="sending-messages">
+              <form class="form-sending-messages">
+                <input type="text" class="input-field">
+              </form>
             </div>
-          <div class="block_right" style="background: {{ background[1] }}">
+          {% endif %}
         </div>
       </div>
     </body>

@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, request, abort, send_file
 from Data import db_session
 from Data.users import User
+from Data.messages import Message
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from form.register import RegisterForm
 from form.login import LoginForm
@@ -32,11 +33,9 @@ def get_image(image_id):
 @app.route('/main/<int:id>', methods=['GET', 'POST'])
 @login_required
 def main_page(id):
-    result = ''
     db_sess = db_session.create_session()
     users = db_sess.query(User).filter((User.id == id)).first()
     background = users.topic.split()
-    print(background)
     form = AboutForm()
     if request.method == "GET":
         users = db_sess.query(User).filter((User.id == id)).first()
@@ -63,28 +62,44 @@ def main_page(id):
             if users:
                 users.topic = ' '.join(background)
                 db_sess.commit()
-            return render_template('main.html', form=form, result=result, background=background)
-        elif request.form.get("night_tema"):
+            return render_template('main.html', form=form, background=background)
+        if request.form.get("night_tema"):
             background = ['#23282b', '#1d334a', '#4a545c', '#979aaa']
             users = db_sess.query(User).filter((User.id == id)).first()
             if users:
                 users.topic = ' '.join(background)
                 db_sess.commit()
-            return render_template('main.html', form=form, result=result, background=background)
-        elif 'file' in request.files and request.files['file'].filename != '':
+            return render_template('main.html', form=form, background=background)
+        if 'file' in request.files and request.files['file'].filename != '':
             file = request.files['file']
             avatar_data = file.read()
             avatar_users = db_sess.query(User).filter((User.id == id)).first()
             if avatar_users:
                 avatar_users.avatar = avatar_data
                 db_sess.commit()
-            return render_template('main.html', form=form, result=result, background=background)
-        elif request.form.get('search'):
+            return render_template('main.html', form=form, background=background)
+        if request.form.get('search'):
             result = request.form['search']
-            found_users = db_sess.query(User).filter(getattr(User, 'name').ilike(f'{result}%')).all()
-            return render_template('main.html', form=form, result=result, found_users=found_users,
+            found_users = db_sess.query(User).filter((getattr(User, 'login').ilike(f'{result}%')) &
+                                                     (User.login != current_user.login)).all()
+            return render_template('main.html', form=form, found_users=found_users,
                                    background=background)
-    return render_template('main.html', form=form, result=result, background=background)
+        if request.form.get('user-button'):
+            button_value = request.form.get('user-button')
+            db_sess = db_session.create_session()
+            selected_user = db_sess.query(User).filter(User.login == button_value).all()
+            chat = db_sess.query(Message).filter((Message.id1_id2 == f'{current_user.id}_{selected_user[0].id}') |
+                                                  (Message.id1_id2 == f'{selected_user[0].id}_{current_user.id}')).first()
+            if not chat:
+                new_chat = Message()
+                new_chat.id1_id2 = f'{current_user.id}_{selected_user[0].id}'
+                db_sess.add(new_chat)
+                db_sess.commit()
+                chat = new_chat
+            print(chat)
+            return render_template('main.html', form=form, background=background,
+                                   chat=chat)
+    return render_template('main.html', form=form, background=background)
 
 
 @app.route('/logout')
@@ -99,11 +114,12 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        if db_sess.query(User).filter(User.email == form.email.data).first():
+        if db_sess.query(User).filter((User.email == form.email.data) | (User.login == form.login.data)).first():
             return render_template('register.html', title='Регистрация', form=form, message='Такой пользователь уже есть')
         with open('static/img/maxresdefault.jpg', 'rb') as img_file:
             avatar_data = img_file.read()
         user = User(
+            login=form.login.data,
             name=form.name.data,
             surname=form.surname.data,
             email=form.email.data,
