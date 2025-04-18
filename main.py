@@ -85,6 +85,7 @@ def main_page(id):
             return render_template('main.html', form=form, found_users=found_users,
                                    background=background)
         if request.form.get('user-button'):
+            global chat, selected_user
             button_value = request.form.get('user-button')
             db_sess = db_session.create_session()
             selected_user = db_sess.query(User).filter(User.login == button_value).all()
@@ -93,11 +94,33 @@ def main_page(id):
             if not chat:
                 new_chat = Message()
                 new_chat.id1_id2 = f'{current_user.id}_{selected_user[0].id}'
+                new_chat.messages = ''
                 db_sess.add(new_chat)
                 db_sess.commit()
                 chat = new_chat
             return render_template('main.html', form=form, background=background,
                                    chat=chat, selected_user=selected_user[0])
+        if request.form.get('input-field'):
+            try:
+                print('' if chat else '')
+            except:
+                return render_template('main.html', form=form, background=background)
+            if request.form.get('input-field') != "'" and request.form.get('input-field') != '"':
+                tab_messages = chat.messages
+                chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
+                chat.messages = tab_messages + (f'---{current_user.id}:{request.form.get("input-field")}')
+                if chat.id1_id2.split('_')[0] == str(current_user.id):
+                    chat.messages_id1 += 1
+                    chat.messages_id2 = 0
+                else:
+                    chat.messages_id2 += 1
+                    chat.messages_id1 = 0
+                db_sess.commit()
+                print(chat.messages)
+                print(chat.messages_id1)
+                print(chat.messages_id2)
+            return render_template('main.html', form=form, background=background,
+                                    chat=chat, selected_user=selected_user[0])
     return render_template('main.html', form=form, background=background)
 
 
@@ -123,7 +146,7 @@ def register():
             surname=form.surname.data,
             email=form.email.data,
             avatar=avatar_data,
-            topic='#23282b; #1d334a; #4a545c; #979aaa;',
+            topic='#23282b #1d334a #4a545c #979aaa',
             about_me='Пока пусто'
         )
         user.set_password(form.password.data)

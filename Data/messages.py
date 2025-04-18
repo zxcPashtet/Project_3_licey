@@ -9,5 +9,5 @@ class Message(SQlAlchemyBase):
     background_id1 = sqlalchemy.Column(sqlalchemy.String, default='ordinary')
     background_id2 = sqlalchemy.Column(sqlalchemy.String, default='ordinary')
     dates = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    messages_id1 = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    messages_id2 = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    messages_id1 = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default=0)
+    messages_id2 = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default=0)

@@ -142,8 +142,9 @@
         <div class="block_right" style="background: {{ background[1] }}">
           {% if chat %}
             <div class="sending-messages">
-              <form class="form-sending-messages">
-                <input type="text" class="input-field">
+              <form method ="post" class="form-sending-messages">
+                <textarea class="input-field" placeholder="Сообщение..." name="input-field"></textarea>
+                <input class="btn btn-primary" type="submit" value="Отправить" style="margin-top: -42px; height: 48px;">
               </form>
             </div>
           {% endif %}

@@ -16,7 +16,7 @@ class User(SQlAlchemyBase, UserMixin, SerializerMixin):
     friends = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     avatar = sqlalchemy.Column(sqlalchemy.LargeBinary, nullable=True)
     topic = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    about_me = sqlalchemy.Column(sqlalchemy.String, unique=True, nullable=True)
+    about_me = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
     def set_password(self, password):

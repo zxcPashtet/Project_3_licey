@@ -203,7 +203,9 @@ position: absolute;
 }
 
 .input-field{
-  width: 800px;
+  width: 990px;
   height: 50px;
   border-radius: 10px;
 }
+
+.input-button-submit
