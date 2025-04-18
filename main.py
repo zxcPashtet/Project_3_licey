@@ -57,14 +57,14 @@ def main_page(id):
             abort(404)
     if request.method == 'POST':
         if request.form.get("light_tema"):
-            background = ['#808080', '#808080', '#808080', '#808080']
+            background = ['#808080;', '#808080;', '#808080;', '#808080;']
             users = db_sess.query(User).filter((User.id == id)).first()
             if users:
                 users.topic = ' '.join(background)
                 db_sess.commit()
             return render_template('main.html', form=form, background=background)
         if request.form.get("night_tema"):
-            background = ['#23282b', '#1d334a', '#4a545c', '#979aaa']
+            background = ['#23282b;', '#1d334a;', '#4a545c;', '#979aaa;']
             users = db_sess.query(User).filter((User.id == id)).first()
             if users:
                 users.topic = ' '.join(background)
@@ -96,9 +96,8 @@ def main_page(id):
                 db_sess.add(new_chat)
                 db_sess.commit()
                 chat = new_chat
-            print(chat)
             return render_template('main.html', form=form, background=background,
-                                   chat=chat)
+                                   chat=chat, selected_user=selected_user[0])
     return render_template('main.html', form=form, background=background)
 
 
@@ -124,12 +123,13 @@ def register():
             surname=form.surname.data,
             email=form.email.data,
             avatar=avatar_data,
-            topic='#23282b #1d334a #4a545c #979aaa'
+            topic='#23282b; #1d334a; #4a545c; #979aaa;',
+            about_me='Пока пусто'
         )
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
-        return redirect(f'/main/{current_user.id}')
+        return redirect(f'/main/{user.id}')
     return render_template('register.html', title='Регистрация', form=form)
 
 

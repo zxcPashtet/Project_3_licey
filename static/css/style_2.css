@@ -9,9 +9,8 @@
 .dialog-class {
 position: absolute;
   font-size: 50px;
-  border-radius: 30px;
   width: 600px;
-  height: 1200px;
+  height: 1020px;
   top: -20px;
   left: 71%;
 }
@@ -19,7 +18,7 @@ position: absolute;
 .button-row1 button {
   display: inline-block;
   margin-right: 5px;
-  margin-top: 300px;
+  margin-top: 100px;
 }
 
 .button-row button {
@@ -47,9 +46,27 @@ position: absolute;
   border-radius: 30px;
   text-align: center;
   font-size: 40px;
-  top: 300px;
+  top: 100px;
 }
-
+.file_button {
+    cursor: pointer;
+    width: 200px;
+    display: inline-block;
+    font-size: 40px;
+    border-radius: 30px;
+    text-align: center;
+}
+.file_button input[type="file"] {
+    display: none;
+}
+.exit_button {
+  width: 420px;
+  font-size: 50px;
+  border-radius: 30px;
+  text-align: center;
+  font-size: 40px;
+  margin-left: 35px;
+}
 .card-text-1 {
     width: 300px;
     text-align: left;
@@ -62,11 +79,9 @@ position: absolute;
 
 .close_and_settings_button {
   width: 70px;
-  font-size: 50px;
   border-radius: 30px;
   text-align: center;
   font-size: 40px;
-
 }
 
 .round {
@@ -98,7 +113,7 @@ position: absolute;
   width: 64%;
   height: 1000px;
   overflow-y: scroll;
-  }
+ }
 
 .user_search{
   position: absolute;
@@ -165,13 +180,25 @@ position: absolute;
   height: 100%;
   object-fit: cover;
 }
-
+.profile-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.inline-button {
+  width: 500px;
+  font-size: 40px;
+  border-radius: 30px;
+  right: 20px;
+  font-size: 50px;
+  text-align: center;
+}
 .button-text {
   flex: 1;
 }
 
 .form-sending-messages {
-  margin-top: 900px;
+  margin-top: 800px;
   margin-left: 40px;
 }
 

@@ -29,7 +29,7 @@
                   <button class="found-users" style="background: {{ background[1] }}" name="user-button"
                           value="{{ i.login }}">
                     <span class="image-container">
-                      <img src="{{ url_for('get_image', image_id=current_user.id) }}" alt="Иконка">
+                      <img src="{{ url_for('get_image', image_id=i.id) }}" alt="Иконка">
                     </span>
                     <span class="button-text">{{ i.name }} {{ i.surname }}</span>
                   </button><br>
@@ -69,9 +69,13 @@
                         style="background-color:  {{ background[3] }}">🌑 тема</button>
               </form>
             </div>
+            <div><a href="http://127.0.0.1:5000/logout"><button type="submit"
+                                                                                    class="exit_button"
+                                                                                    style="background-color: #CD5C5C">
+              Выйти</button></a></div>
           </dialog>
           <dialog id="settingsDialog" class="dialog-class" style="background-color: {{ background[2] }}">
-            <button type="button" style="margin-left: 378px;"
+            <button type="button" style="margin-left: 378px; background-color: {{ background[3] }}"
                     class="close_and_settings_button" onclick="window.settingsDialog.close()">❌</button>
             <form action="" method="post">
               {{ form.hidden_tag() }}
@@ -98,13 +102,43 @@
                 {% endfor %}</p>
                 <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
               </form>
-            <form action = "" method = "POST"
+            <div class="button-row1">
+              <form action = "" method = "POST"
                   enctype = "multipart/form-data">
-               <input type="file" name="file">
-              <a href="http://127.0.0.1:5000/main/{{ current_user.id }}"><button type="submit">Загрузить</button></a>
-            </form>
+                <label class="file_button" style="background-color: {{ background[3] }}">
+                  <input type="file" name="file" />Фото</label>
+              <a href="http://127.0.0.1:5000/main/{{ current_user.id }}"><button class="tema_button"
+                                                                                 style="background-color: {{ background[3] }}"
+                                                                                 type="submit">Загрузить</button></a>
+              </form>
+            </div>
           </dialog>
         </div>
+        {% if chat %}
+          <div style="background-color: {{ background[3] }}" class="pofile-container">
+            <img src="{{ url_for('get_image', image_id=selected_user.id) }}" alt="Иконка" class="round" style="margin-left: 20px;">
+            <button class="inline-button"
+                    style="background-color: {{ background[3] }}; border: none;"
+                    onclick="window.userDialog.show()">{{ selected_user.name }} {{ selected_user.surname }}</button>
+          </div>
+          <dialog id="userDialog" class="dialog-class" style="background-color: {{ background[2] }}">
+              <div class="button-row">
+                <button type="button" class="close_and_settings_button" style="background-color: {{ background[3] }}"
+                        onclick="window.userDialog.close()">❌</button>
+              </div>
+              <div class="avatar_name">
+                <img src="{{ url_for('get_image', image_id=selected_user.id) }}" alt="" class="round">
+              </div>
+                  <p style="text-align: center;">{{ selected_user.name }} {{ selected_user.surname }}</p>
+              <div>
+                <p style="font-size: 30px; text-align: center;">Информация</p>
+                <div style="width: 500px; height: 300px; overflow-y: scroll; font-size: 30px;
+                  scrollbar-color: #979aaa #4a545c;">
+                  {{ selected_user.about_me }}
+                </div>
+              </div>
+          </dialog>
+        {% endif %}
         <div class="block_right" style="background: {{ background[1] }}">
           {% if chat %}
             <div class="sending-messages">
