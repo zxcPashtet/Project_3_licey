@@ -153,15 +153,26 @@
                 </div>
               </div>
           </dialog>
+          <div class="sending-messages">
+            <form method ="post" class="form-sending-messages">
+              <textarea class="input-field" placeholder="Сообщение..." name="input-field"></textarea>
+              <input class="btn btn-primary" type="submit" value="Отправить" style="margin-top: -42px; height: 48px;">
+            </form>
+          </div>
         {% endif %}
         <div class="block_right" style="background: {{ background[1] }}">
           {% if chat %}
-            <div class="sending-messages">
-              <form method ="post" class="form-sending-messages">
-                <textarea class="input-field" placeholder="Сообщение..." name="input-field"></textarea>
-                <input class="btn btn-primary" type="submit" value="Отправить" style="margin-top: -42px; height: 48px;">
-              </form>
-            </div>
+            {% for i in range(chat_messages|length) %}
+              <div class="displaying-messages">
+                <form class="form-displaying-messages" method="post" action="">
+                  {% if chat_messages[i].split(':')[0] == current_user.id %}
+                    <button class="message_right">{{chat_messages[i].split(':')[1]}}</button>
+                  {% else %}
+                    <button class="message_left">{{chat_messages[i].split(':')[1]}}</button>
+                  {% endif %}
+                </form>
+              </div>
+            {% endfor %}
           {% endif %}
         </div>
       </div>

@@ -206,7 +206,8 @@ position: absolute;
 
 .form-sending-messages {
   margin-top: 800px;
-  margin-left: 40px;
+  margin-left: 680px;
+  position: absolute
 }
 
 .input-field{

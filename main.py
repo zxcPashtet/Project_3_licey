@@ -72,7 +72,8 @@ def main_page(id):
             if users:
                 users.topic = ' '.join(background)
                 db_sess.commit()
-            return render_template('main.html', form=form, background=background,
+            return render_template('main.html', form=form,
+                                   background=background,
                                    created_chats_users=created_chats_users)
 
         if request.form.get("night_tema"):
@@ -81,7 +82,8 @@ def main_page(id):
             if users:
                 users.topic = ' '.join(background)
                 db_sess.commit()
-            return render_template('main.html', form=form, background=background,
+            return render_template('main.html', form=form,
+                                   background=background,
                                    created_chats_users=created_chats_users)
 
         if 'file' in request.files and request.files['file'].filename != '':
@@ -91,14 +93,16 @@ def main_page(id):
             if avatar_users:
                 avatar_users.avatar = avatar_data
                 db_sess.commit()
-            return render_template('main.html', form=form, background=background,
+            return render_template('main.html', form=form,
+                                   background=background,
                                    created_chats_users=created_chats_users)
 
         if request.form.get('search'):
             result = request.form['search']
             found_users = db_sess.query(User).filter((getattr(User, 'login').ilike(f'{result}%')) &
                                                      (User.login != current_user.login)).all()
-            return render_template('main.html', form=form, found_users=found_users,
+            return render_template('main.html', form=form,
+                                   found_users=found_users,
                                    background=background)
 
         if request.form.get('user-button'):
@@ -115,15 +119,19 @@ def main_page(id):
                 db_sess.add(new_chat)
                 db_sess.commit()
                 chat = new_chat
-            return render_template('main.html', form=form, background=background,
-                                   chat=chat, selected_user=selected_user[0],
-                                   created_chats_users=created_chats_users)
+            return render_template('main.html', form=form,
+                                   background=background,
+                                   chat=chat,
+                                   selected_user=selected_user[0],
+                                   created_chats_users=created_chats_users,
+                                   chat_messages=chat.messages.split('---'))
 
         if request.form.get('input-field'):
             try:
                 print('' if chat else '')
             except:
-                return render_template('main.html', form=form, background=background,
+                return render_template('main.html', form=form,
+                                       background=background,
                                        created_chats_users=created_chats_users)
             if request.form.get('input-field') != "'" and request.form.get('input-field') != '"':
                 tab_messages = chat.messages
@@ -136,10 +144,15 @@ def main_page(id):
                     chat.messages_id2 += 1
                     chat.messages_id1 = 0
                 db_sess.commit()
-            return render_template('main.html', form=form, background=background,
-                                    chat=chat, selected_user=selected_user[0], created_chats_users=created_chats_users)
+            return render_template('main.html', form=form,
+                                   background=background,
+                                   chat=chat,
+                                   selected_user=selected_user[0],
+                                   created_chats_users=created_chats_users,
+                                   chat_messages=chat.messages.split('---'))
 
-    return render_template('main.html', form=form, background=background,
+    return render_template('main.html', form=form,
+                           background=background,
                            created_chats_users=created_chats_users)
 
 
