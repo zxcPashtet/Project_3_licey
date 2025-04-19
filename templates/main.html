@@ -162,13 +162,15 @@
         {% endif %}
         <div class="block_right" style="background: {{ background[1] }}">
           {% if chat %}
-            {% for i in range(chat_messages|length) %}
+            {% for i in range(1, chat_messages|length) %}
               <div class="displaying-messages">
                 <form class="form-displaying-messages" method="post" action="">
                   {% if chat_messages[i].split(':')[0] == current_user.id %}
-                    <button class="message_right">{{chat_messages[i].split(':')[1]}}</button>
+                    <img src="{{ url_for('get_image', image_id=chat_messages[i].split(':')[0]) }}" alt="" class="img-message">
+                    <button class="message_me">{{chat_messages[i].split(':')[1]}}</button>
                   {% else %}
-                    <button class="message_left">{{chat_messages[i].split(':')[1]}}</button>
+                    <img src="{{ url_for('get_image', image_id=chat_messages[i].split(':')[0]) }}" alt="" class="img-message">
+                    <button class="message_another">{{chat_messages[i].split(':')[1]}}</button>
                   {% endif %}
                 </form>
               </div>
