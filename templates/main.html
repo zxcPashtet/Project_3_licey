@@ -37,6 +37,21 @@
               {% endfor %}
             {% endif %}
           </div>
+          <div class="created-chats">
+            {% if created_chats_users %}
+              {% for i in created_chats_users %}
+                <form method ="post" action="">
+                  <button class="found-users" style="background: {{ background[1] }}" name="user-button"
+                          value="{{ i.login }}">
+                    <span class="image-container">
+                      <img src="{{ url_for('get_image', image_id=i.id) }}" alt="Иконка">
+                    </span>
+                    <span class="button-text">{{ i.name }} {{ i.surname }}</span>
+                  </button><br>
+                </form>
+              {% endfor %}
+            {% endif %}
+          </div>
           <dialog id="myDialog" class="dialog-class" style="background-color: {{ background[2] }}">
             <div class="button-row">
               <button type="button" class="close_and_settings_button" style="background-color: {{ background[3] }}"

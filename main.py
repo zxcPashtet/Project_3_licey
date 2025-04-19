@@ -34,6 +34,17 @@ def get_image(image_id):
 @login_required
 def main_page(id):
     db_sess = db_session.create_session()
+
+    created_chats = db_sess.query(Message).filter(((getattr(Message, 'id1_id2').ilike(f'{current_user.id}_%')) |
+                                                   (getattr(Message, 'id1_id2').ilike(f'%_{current_user.id}')))).all()
+    created_chats_users = []
+    for i in created_chats:
+        if i.id1_id2.split('_')[0] == str(current_user.id):
+            id_enemy = i.id1_id2.split('_')[1]
+        else:
+            id_enemy = i.id1_id2.split('_')[0]
+        created_chats_users.append(db_sess.query(User).filter(User.id == id_enemy).all()[0])
+
     users = db_sess.query(User).filter((User.id == id)).first()
     background = users.topic.split()
     form = AboutForm()
@@ -46,7 +57,6 @@ def main_page(id):
         else:
             abort(404)
     if form.validate_on_submit():
-        users = db_sess.query(User).filter((User.id == id)).first()
         if users:
             users.name = form.name.data
             users.surname = form.surname.data
@@ -62,14 +72,18 @@ def main_page(id):
             if users:
                 users.topic = ' '.join(background)
                 db_sess.commit()
-            return render_template('main.html', form=form, background=background)
+            return render_template('main.html', form=form, background=background,
+                                   created_chats_users=created_chats_users)
+
         if request.form.get("night_tema"):
             background = ['#23282b;', '#1d334a;', '#4a545c;', '#979aaa;']
             users = db_sess.query(User).filter((User.id == id)).first()
             if users:
                 users.topic = ' '.join(background)
                 db_sess.commit()
-            return render_template('main.html', form=form, background=background)
+            return render_template('main.html', form=form, background=background,
+                                   created_chats_users=created_chats_users)
+
         if 'file' in request.files and request.files['file'].filename != '':
             file = request.files['file']
             avatar_data = file.read()
@@ -77,13 +91,16 @@ def main_page(id):
             if avatar_users:
                 avatar_users.avatar = avatar_data
                 db_sess.commit()
-            return render_template('main.html', form=form, background=background)
+            return render_template('main.html', form=form, background=background,
+                                   created_chats_users=created_chats_users)
+
         if request.form.get('search'):
             result = request.form['search']
             found_users = db_sess.query(User).filter((getattr(User, 'login').ilike(f'{result}%')) &
                                                      (User.login != current_user.login)).all()
             return render_template('main.html', form=form, found_users=found_users,
                                    background=background)
+
         if request.form.get('user-button'):
             global chat, selected_user
             button_value = request.form.get('user-button')
@@ -99,12 +116,15 @@ def main_page(id):
                 db_sess.commit()
                 chat = new_chat
             return render_template('main.html', form=form, background=background,
-                                   chat=chat, selected_user=selected_user[0])
+                                   chat=chat, selected_user=selected_user[0],
+                                   created_chats_users=created_chats_users)
+
         if request.form.get('input-field'):
             try:
                 print('' if chat else '')
             except:
-                return render_template('main.html', form=form, background=background)
+                return render_template('main.html', form=form, background=background,
+                                       created_chats_users=created_chats_users)
             if request.form.get('input-field') != "'" and request.form.get('input-field') != '"':
                 tab_messages = chat.messages
                 chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
@@ -116,12 +136,11 @@ def main_page(id):
                     chat.messages_id2 += 1
                     chat.messages_id1 = 0
                 db_sess.commit()
-                print(chat.messages)
-                print(chat.messages_id1)
-                print(chat.messages_id2)
             return render_template('main.html', form=form, background=background,
-                                    chat=chat, selected_user=selected_user[0])
-    return render_template('main.html', form=form, background=background)
+                                    chat=chat, selected_user=selected_user[0], created_chats_users=created_chats_users)
+
+    return render_template('main.html', form=form, background=background,
+                           created_chats_users=created_chats_users)
 
 
 @app.route('/logout')

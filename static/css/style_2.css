@@ -151,6 +151,13 @@ position: absolute;
   flex-wrap: wrap;
 }
 
+.created-chats{
+  display: flex;
+  justify-content: center;
+  margin-top: 0px;
+  flex-wrap: wrap;
+}
+
 .found-users{
   width: 500px;
   height: 75px;
@@ -207,5 +214,3 @@ position: absolute;
   height: 50px;
   border-radius: 10px;
 }
-
-.input-button-submit
