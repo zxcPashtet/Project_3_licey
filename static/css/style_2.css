@@ -78,10 +78,10 @@ position: absolute;
 }
 
 .close_and_settings_button {
-  width: 70px;
+  width: 60px;
   border-radius: 30px;
   text-align: center;
-  font-size: 40px;
+  font-size: 30px;
 }
 
 .round {
