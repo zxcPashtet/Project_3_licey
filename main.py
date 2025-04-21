@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, abort, send_file
+from flask import Flask, render_template, redirect, request, abort, send_file, url_for
 from Data import db_session
 from Data.users import User
 from Data.messages import Message
@@ -16,6 +16,7 @@ UPLOADS_PATH = join(dirname(realpath(__file__)), 'static\\img')
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 login_manager = LoginManager()
 login_manager.init_app(app)
+
 
 
 @app.route('/')
@@ -38,13 +39,19 @@ def main_page(id):
 
         created_chats = db_sess.query(Message).filter(((getattr(Message, 'id1_id2').ilike(f'{current_user.id}_%')) |
                                                        (getattr(Message, 'id1_id2').ilike(f'%_{current_user.id}')))).all()
-        created_chats_users = []
+        created_chats_users = {}
         for i in created_chats:
-            if i.id1_id2.split('_')[0] == str(current_user.id):
-                id_enemy = i.id1_id2.split('_')[1]
-            else:
-                id_enemy = i.id1_id2.split('_')[0]
-            created_chats_users.append(db_sess.query(User).filter(User.id == id_enemy).all()[0])
+            if i.messages != '':
+                if i.id1_id2.split('_')[0] == str(current_user.id):
+                    id_enemy = i.id1_id2.split('_')[1]
+                else:
+                    id_enemy = i.id1_id2.split('_')[0]
+                if i.id1_id2.split('_')[0] == id_enemy :
+                    created_chats_users[db_sess.query(User).filter(User.id == id_enemy).all()[0]] = int(i.messages_id1)
+                if i.id1_id2.split('_')[1] == id_enemy:
+                    created_chats_users[db_sess.query(User).filter(User.id == id_enemy).all()[0]] = int(i.messages_id2)
+            created_chats_users = sorted(created_chats_users.items(), key=lambda item: item[1], reverse=True)
+            created_chats_users = dict(created_chats_users)
 
         users = db_sess.query(User).filter((User.id == id)).first()
         background = users.topic.split()
@@ -75,7 +82,8 @@ def main_page(id):
                     db_sess.commit()
                 return render_template('main.html', form=form,
                                        background=background,
-                                       created_chats_users=created_chats_users)
+                                       created_chats_users=created_chats_users,
+                                       created_chats=created_chats)
 
             if request.form.get("night_tema"):
                 background = ['#23282b;', '#1d334a;', '#4a545c;', '#979aaa;']
@@ -85,7 +93,8 @@ def main_page(id):
                     db_sess.commit()
                 return render_template('main.html', form=form,
                                        background=background,
-                                       created_chats_users=created_chats_users)
+                                       created_chats_users=created_chats_users,
+                                       created_chats=created_chats)
 
             if 'file' in request.files and request.files['file'].filename != '':
                 file = request.files['file']
@@ -96,12 +105,29 @@ def main_page(id):
                     db_sess.commit()
                 return render_template('main.html', form=form,
                                        background=background,
-                                       created_chats_users=created_chats_users)
+                                       created_chats_users=created_chats_users,
+                                       created_chats=created_chats)
 
             if request.form.get('search'):
                 result = request.form['search']
-                found_users = db_sess.query(User).filter((getattr(User, 'login').ilike(f'{result}%')) &
-                                                         (User.login != current_user.login)).all()
+                found_users = {}
+                for i in db_sess.query(User).filter(((getattr(User, 'login').ilike(f'{result}%')) &
+                                                     (User.login != current_user.login) |
+                                                     (getattr(User, 'email').ilike(f'{result}%')) &
+                                                     (User.email != current_user.email))).all():
+                    temp_chat = db_sess.query(Message).filter(((getattr(Message, 'id1_id2').ilike(f'{current_user.id}_{i.id}')) |
+                                                       (getattr(Message, 'id1_id2').ilike(f'{i.id}_{current_user.id}')))).all()
+
+                    if temp_chat:
+                        if temp_chat[0].messages != '':
+                            if str(temp_chat[0].id1_id2.split('_')[0]) == str(i.id):
+                                found_users[i] = int(temp_chat[0].messages_id1)
+                            else:
+                                found_users[i] = int(temp_chat[0].messages_id2)
+                        else:
+                            found_users[i] = 'None'
+                    else:
+                        found_users[i] = 'None'
                 return render_template('main.html', form=form,
                                        found_users=found_users,
                                        background=background)
@@ -120,12 +146,44 @@ def main_page(id):
                     db_sess.add(new_chat)
                     db_sess.commit()
                     chat = new_chat
+                if chat.id1_id2.split('_')[0] == str(current_user.id):
+                    chat.messages_id2 = 0
+                else:
+                    chat.messages_id1 = 0
+                db_sess.commit()
                 return render_template('main.html', form=form,
                                        background=background,
                                        chat=chat,
                                        selected_user=selected_user[0],
                                        created_chats_users=created_chats_users,
-                                       chat_messages=chat.messages.split('---'))
+                                       created_chats=created_chats,
+                                       chat_messages=chat.messages.split('---'),
+                                       text=' ')
+
+            if request.form.get('block'):
+                tab_messages = chat.messages
+                chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
+                chat.messages = tab_messages + ('---USER_HAS_BLOCKED_THIS_CHAT')
+                return render_template('main.html', form=form,
+                                       background=background,
+                                       chat=chat,
+                                       selected_user=selected_user[0],
+                                       created_chats_users=created_chats_users,
+                                       created_chats=created_chats,
+                                       chat_messages=chat.messages.split('---'),
+                                       text=' ')
+
+            if request.form.get('unblock'):
+                chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
+                chat.messages = chat.messages.split('---')[:-1]
+                return render_template('main.html', form=form,
+                                       background=background,
+                                       chat=chat,
+                                       selected_user=selected_user[0],
+                                       created_chats_users=created_chats_users,
+                                       created_chats=created_chats,
+                                       chat_messages=chat.messages.split('---'),
+                                       text=' ')
 
             if request.form.get('input-field'):
                 try:
@@ -133,28 +191,30 @@ def main_page(id):
                 except:
                     return render_template('main.html', form=form,
                                            background=background,
-                                           created_chats_users=created_chats_users)
-                if request.form.get('input-field') != "'" and request.form.get('input-field') != '"':
-                    tab_messages = chat.messages
-                    chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
-                    chat.messages = tab_messages + (f'---{current_user.id}:{request.form.get("input-field")}')
-                    if chat.id1_id2.split('_')[0] == str(current_user.id):
-                        chat.messages_id1 += 1
-                        chat.messages_id2 = 0
-                    else:
-                        chat.messages_id2 += 1
-                        chat.messages_id1 = 0
-                    db_sess.commit()
-                return render_template('main.html', form=form,
-                                       background=background,
-                                       chat=chat,
-                                       selected_user=selected_user[0],
-                                       created_chats_users=created_chats_users,
-                                       chat_messages=chat.messages.split('---'))
+                                           created_chats_users=created_chats_users,
+                                       created_chats=created_chats)
 
-        return render_template('main.html', form=form,
-                               background=background,
-                               created_chats_users=created_chats_users)
+                if (request.form.get('input-field') != "'" and request.form.get('input-field') != '"' and
+                        request.form.get('input-field') != " "):
+                    tab_messages = chat.messages
+                    if tab_messages.split('---')[-1] != 'USER_HAS_BLOCKED_THIS_CHAT':
+                        chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
+                        chat.messages = tab_messages + (f'---{current_user.id}:{request.form.get("input-field")}')
+                        if chat.id1_id2.split('_')[0] == str(current_user.id):
+                            chat.messages_id1 += 1
+                        else:
+                            chat.messages_id2 += 1
+                        db_sess.commit()
+                return redirect(f'/main/{current_user.id}')
+            return render_template('main.html', form=form,
+                                        background=background,
+                                        chat=chat,
+                                        selected_user=selected_user[0],
+                                        created_chats_users=created_chats_users,
+                                        created_chats=created_chats,
+                                        chat_messages=chat.messages.split('---'),
+                                        text=' ')
+
     return render_template('/register')
 
 

@@ -14,7 +14,8 @@
             <button type="button" class="learn_more" onclick="window.myDialog.show(); window.userDialog.close()"
                     style="background:  {{ background[1] }}">☰</button>
             <form method="POST" action="" class="form_user_search">
-              <textarea class="user_search" name="search" style="background: {{ background[1] }}" rows="1" placeholder="Поиск"></textarea>
+              <textarea class="user_search" name="search" id="user_search" style="background: {{ background[1] }}"
+                        rows="1" placeholder="Поиск"></textarea>
               <button class="user_search_submit" style="background: {{ background[1] }}" type="submit">Подтвердить</button>
               <a href="http://127.0.0.1:5000/main/{{ current_user.id }}">
                 <button class="on_main" style="background: {{ background[1] }}" type="button">Сбросить</button>
@@ -31,6 +32,9 @@
                       <img src="{{ url_for('get_image', image_id=i.id) }}" alt="Иконка">
                     </span>
                     <span class="button-text">{{ i.name }} {{ i.surname }}</span>
+                    {% if found_users[i] != 'None' and found_users[i] != 0%}
+                      <span class="number-of-messages">{{ found_users[i] }}</span>
+                    {% endif %}
                   </button><br>
                 </form>
               {% endfor %}
@@ -46,6 +50,9 @@
                       <img src="{{ url_for('get_image', image_id=i.id) }}" alt="Иконка">
                     </span>
                     <span class="button-text">{{ i.name }} {{ i.surname }}</span>
+                    {% if created_chats_users[i] != 0%}
+                    <span class="number-of-messages">{{ created_chats_users[i] }}</span>
+                    {% endif %}
                   </button><br>
                 </form>
               {% endfor %}
@@ -61,11 +68,16 @@
               {{ selected_user.name }} {{ selected_user.surname }}</button>
           </div>
           <div class="sending-messages">
-            <form method ="post" class="form-sending-messages">
+            <form method ="post" class="form-sending-messages" id="form-sending-messages">
               <button type="button" class="close_and_settings_button" style="background-color: {{ background[3] }}
                font-size: 30px; height: 60px;" onclick="window.emojiDialog.show()">•ᴗ•</button>
-              <textarea class="input-field" placeholder="Сообщение..." name="input-field">{{text}}</textarea>
+              <textarea class="input-field" placeholder="Сообщение..." name="input-field" id="input-field">{{ text }}</textarea>
               <input class="btn btn-primary" type="submit" value="Отправить" style="margin-top: -42px; height: 48px;">
+              {% if chat.messages.split('---')[-1] != 'USER_HAS_BLOCKED_THIS_CHAT'%}
+                <button type="button" class="btn btn-danger" name="block" style="margin-top: -1850px; margin-left: 1020px;">Заблокировать</button>
+              {% else %}
+                <button type="button" class="btn btn-success" name="unblock" style="margin-top: -1850px; margin-left: 1020px;">Разблокировать</button>
+              {% endif %}
             </form>
           </div>
         <dialog id="emojiDialog" style="background-color: {{ background[2] }}; margin-top: 352px; margin-left: 750px;
@@ -193,5 +205,35 @@
           {% endif %}
         </div>
       </div>
+        <script>
+          const fields = ['input-field', 'user_search'];
+
+          window.addEventListener('load', () => {
+            fields.forEach(id => {
+              const saved = localStorage.getItem(id);
+              if (saved !== null) {
+                const el = document.getElementById(id);
+                if (el) el.value = saved;
+              }
+            });
+          });
+
+          fields.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+              el.addEventListener('input', () => {
+                localStorage.setItem(id, el.value);
+              });
+            }
+          });
+
+          document.getElementById('form-sending-messages').addEventListener('submit', () => {
+            localStorage.removeItem('input-field');
+          });
+
+          setInterval(function() {
+            location.reload();
+          }, 20000);
+        </script>
     </body>
   </html>

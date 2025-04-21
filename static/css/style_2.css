@@ -111,7 +111,7 @@ position: absolute;
 
 .block_right {
   width: 64%;
-  height: 1000px;
+  height: 800px;
   overflow-y: scroll;
  }
 
@@ -187,11 +187,13 @@ position: absolute;
   height: 100%;
   object-fit: cover;
 }
+
 .profile-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
+
 .inline-button {
   width: 500px;
   font-size: 40px;
@@ -200,6 +202,7 @@ position: absolute;
   font-size: 50px;
   text-align: center;
 }
+
 .button-text {
   flex: 1;
 }
