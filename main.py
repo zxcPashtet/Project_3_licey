@@ -32,8 +32,9 @@ def get_image(image_id):
 
 
 @app.route('/main/<int:id>', methods=['GET', 'POST'])
+@app.route('/main/<int:id>/<string:chat_id>', methods=['GET', 'POST'])
 @login_required
-def main_page(id):
+def main_page(id, chat_id=None):
     if current_user.is_authenticated:
         db_sess = db_session.create_session()
 
@@ -205,17 +206,28 @@ def main_page(id):
                         else:
                             chat.messages_id2 += 1
                         db_sess.commit()
-                return redirect(f'/main/{current_user.id}')
+                    return redirect(url_for('main_page', id=current_user.id, chat_id=chat.id1_id2))
+        if chat_id:
+            chat = db_sess.query(Message).filter(Message.id1_id2 == chat_id).first()
+            if chat:
+                if int(chat.id1_id2.split('_')[0]) == int(current_user.id):
+                    selected_user = db_sess.query(User).filter(User.id == int(chat.id1_id2.split('_')[1])).first()
+                if int(chat.id1_id2.split('_')[1]) == int(current_user.id):
+                    selected_user = db_sess.query(User).filter(User.id == int(chat.id1_id2.split('_')[0])).first()
+                return render_template('main.html', form=form,
+                                       background=background,
+                                       chat=chat,
+                                       selected_user=selected_user,
+                                       created_chats_users=created_chats_users,
+                                       created_chats=created_chats,
+                                       chat_messages=chat.messages.split('---'),
+                                       text=' ')
+        else:
             return render_template('main.html', form=form,
-                                        background=background,
-                                        chat=chat,
-                                        selected_user=selected_user[0],
-                                        created_chats_users=created_chats_users,
-                                        created_chats=created_chats,
-                                        chat_messages=chat.messages.split('---'),
-                                        text=' ')
-
-    return render_template('/register')
+                                   background=background,
+                                   created_chats_users=created_chats_users,
+                                   created_chats=created_chats)
+    return redirect('/register')
 
 
 @app.route('/logout')

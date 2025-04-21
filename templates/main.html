@@ -68,37 +68,16 @@
               {{ selected_user.name }} {{ selected_user.surname }}</button>
           </div>
           <div class="sending-messages">
-            <form method ="post" class="form-sending-messages" id="form-sending-messages">
-              <button type="button" class="close_and_settings_button" style="background-color: {{ background[3] }}
-               font-size: 30px; height: 60px;" onclick="window.emojiDialog.show()">•ᴗ•</button>
+            <form method="post" class="form-sending-messages" id="form-sending-messages" action="" enctype="multipart/form-data">
               <textarea class="input-field" placeholder="Сообщение..." name="input-field" id="input-field">{{ text }}</textarea>
               <input class="btn btn-primary" type="submit" value="Отправить" style="margin-top: -42px; height: 48px;">
               {% if chat.messages.split('---')[-1] != 'USER_HAS_BLOCKED_THIS_CHAT'%}
-                <button type="button" class="btn btn-danger" name="block" style="margin-top: -1850px; margin-left: 1020px;">Заблокировать</button>
+                    <button type="button" class="btn btn-danger" name="block" value="block" style="margin-top: -1850px; margin-left: 1020px;">Заблокировать</button>
               {% else %}
-                <button type="button" class="btn btn-success" name="unblock" style="margin-top: -1850px; margin-left: 1020px;">Разблокировать</button>
+                    <button type="button" class="btn btn-success" name="unblock" value="unblock" style="margin-top: -1850px; margin-left: 1020px;">Разблокировать</button>
               {% endif %}
             </form>
           </div>
-        <dialog id="emojiDialog" style="background-color: {{ background[2] }}; margin-top: 352px; margin-left: 750px;
-         height: 450px; width: 980px;">
-              <div class="button-row">
-                <button type="button" class="close_and_settings_button" style="background-color: {{ background[3] }} margin-left: 500px;"
-                        onclick="window.emojiDialog.close()">❌</button>
-              </div>
-            {% set emoji_list = [['q', 'w', 'e', 'r', 't'], ['q', 'w', 'e', 'r', 't'], ['q', 'w', 'e', 'r', 't']] %}
-            <form method="POST">
-              {% for sublist in emoji_list %}
-                <div style="margin-left: 200px; margin-top: 20px;">
-                    {% for emoji in sublist %}
-                        <button style="width: 50px; height: 50px; font-size: 30px; margin-right: 60px; margin-bottom: 60px;
-                        display: inline-block; background: {{ background[1] }} border-radius: 10px"
-                                name="button_text" value="{{ emoji }}">{{ emoji }}</button>
-                    {% endfor %}
-                </div>
-              {% endfor %}
-            </form>
-          </dialog>
         <dialog id="userDialog" class="dialog-class" style="background-color: {{ background[2] }}">
               <div class="button-row">
                 <button type="button" class="close_and_settings_button" style="background-color: {{ background[3] }}; margin-left: 50px;"
