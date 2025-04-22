@@ -18,7 +18,7 @@ position: absolute;
 .button-row1 button {
   display: inline-block;
   margin-right: 5px;
-  margin-top: 100px;
+  margin-top: 20px;
 }
 
 .button-row button {
@@ -46,7 +46,6 @@ position: absolute;
   border-radius: 30px;
   text-align: center;
   font-size: 40px;
-  top: 100px;
 }
 .file_button {
     cursor: pointer;
@@ -228,7 +227,6 @@ position: absolute;
   font-size: 20px;
   border-radius: 12px;
 }
-
 .message_another{
   font-size: 20px;
   border-radius: 12px;

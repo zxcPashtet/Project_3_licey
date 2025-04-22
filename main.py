@@ -5,8 +5,14 @@ from Data.messages import Message
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from form.register import RegisterForm
 from form.login import LoginForm
+from form.verify import VerifyForm
 from form.aboutme import AboutForm
 from os.path import join, dirname, realpath
+from pyotp import TOTP
+import smtplib
+import secrets
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 import io
 
 
@@ -16,7 +22,6 @@ UPLOADS_PATH = join(dirname(realpath(__file__)), 'static\\img')
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 login_manager = LoginManager()
 login_manager.init_app(app)
-
 
 
 @app.route('/')
@@ -76,7 +81,7 @@ def main_page(id, chat_id=None):
                 abort(404)
         if request.method == 'POST':
             if request.form.get("light_tema"):
-                background = ['#549134;', '#D4E189;', '#8ABB24', '#9DCCA0;']
+                background = ['#FDF4E3;', '#F9F9F9;', '#F2DDC6;', '#B39F7A;']
                 users = db_sess.query(User).filter((User.id == id)).first()
                 if users:
                     users.topic = ' '.join(background)
@@ -87,7 +92,7 @@ def main_page(id, chat_id=None):
                                        created_chats=created_chats)
 
             if request.form.get("night_tema"):
-                background = ['#23282b;', '#1d334a;', '#4a545c;', '#979aaa;']
+                background = ['#23282b;', '#1d334a;', '#4a545c;', '#415a77;']
                 users = db_sess.query(User).filter((User.id == id)).first()
                 if users:
                     users.topic = ' '.join(background)
@@ -237,10 +242,33 @@ def logout():
     return redirect('/login')
 
 
+def generate_otp(totp_secret: str):
+    return TOTP(totp_secret).now()
+
+
+def send_email(subject: str, body: str, from_addr: str, to_addr: str):
+    msg = MIMEMultipart()
+    msg['From'] = from_addr
+    msg['To'] = to_addr
+    msg['Subject'] = subject
+    msg.attach(MIMEText(body, 'plain'))
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login(from_addr, 'xzwt kunc faok rctx')
+    text = msg.as_string()
+    server.sendmail(from_addr, to_addr, text)
+    server.quit()
+
+
+def generate_2fa_secret(length: int = 6) -> str:
+    return secrets.token_urlsafe(length)
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
+        otp = generate_2fa_secret()
         db_sess = db_session.create_session()
         if db_sess.query(User).filter((User.email == form.email.data) | (User.login == form.login.data)).first():
             return render_template('register.html', title='Регистрация', form=form, message='Такой пользователь уже есть')
@@ -253,12 +281,13 @@ def register():
             email=form.email.data,
             avatar=avatar_data,
             topic='#23282b #1d334a #4a545c #979aaa',
-            about_me='Пока пусто'
+            about_me='Пока пусто',
+            totp_secret=otp
         )
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
-        return redirect(f'/main/{user.id}')
+        return redirect(f'/main/{current_user.id}')
     return render_template('register.html', title='Регистрация', form=form)
 
 
@@ -275,10 +304,24 @@ def login():
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
+            otp = generate_2fa_secret()
             login_user(user, remember=form.remember_me.data)
-            return redirect(f'/main/{current_user.id}')
+            send_email('OTP', otp, 'ega.firefox@gmail.com', form.email.data)
+            return redirect(f'/verify/{otp}')
         return render_template('login.html', form=form, message='Неправильный логин или пароль')
     return render_template('login.html', title='Авторизация', form=form)
+
+
+@app.route('/verify/<string:otp>', methods=['POST', 'GET'])
+def verify(otp):
+    form = VerifyForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).filter(User.id == current_user.id).first()
+        print(user.id, user.email, otp)
+        if user and form.otp.data == otp:
+            return redirect(f'/main/{user.id}')
+    return render_template('verify.html', form=form)
 
 
 def main():

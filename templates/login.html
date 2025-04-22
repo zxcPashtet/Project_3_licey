@@ -23,7 +23,7 @@
                     {{ error }}
                 </div>
             {% endfor %}
-
+        </p>
         <p class="card-text-2">{{ form.remember_me() }} {{ form.remember_me.label }}</p>
         <div class="button-row1">
             <button type="submit" class="button-changing-input-mode">Подтвердить</button>
@@ -31,5 +31,6 @@
                 <button type="button" class="button-changing-input-mode">Регистрация</button>
         <div>{{ message }}</div>
         </div>
+    </div>
 </form>
 {% endblock %}
