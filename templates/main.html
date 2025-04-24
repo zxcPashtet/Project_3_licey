@@ -18,7 +18,7 @@
                         rows="1" placeholder="Поиск"></textarea>
               <button class="user_search_submit" style="background: {{ background[1] }}" type="submit">Подтвердить</button>
               <a href="http://127.0.0.1:5000/main/{{ current_user.id }}">
-                <button class="on_main" style="background: {{ background[1] }}" type="button">Сбросить</button>
+                <button class="on_main" id="resetButton" style="background: {{ background[1] }}" type="button">Сбросить</button>
               </a>
             </form>
           </div>
@@ -170,20 +170,29 @@
             </div>
           </dialog>
         <div class="block_right" style="background: {{ background[1] }}">
+          {% if delete_or_edit %}
+            <form class="delete-or-edit" method="post" action="">
+                <button class="edit-message" name="action" value="edit">Изменить</button>
+                <br>
+                <button class="delete-message" name="action" value="delete">Удалить</button>
+            </form>
+          {% endif %}
           {% if chat %}
-            {% for i in range(1, chat_messages|length) %}
-              <div class="">
-                <form class="form-displaying-messages" method="post" action="">
-                  {% if chat_messages[i].split(':')[0] == current_user.id %}
-                    <img src="{{ url_for('get_image', image_id=chat_messages[i].split(':')[0]) }}" alt="" class="img-message">
-                    <button class="message_me">{{chat_messages[i].split(':')[1]}}</button>
-                  {% else %}
-                    <img src="{{ url_for('get_image', image_id=chat_messages[i].split(':')[0]) }}" alt="" class="img-message">
-                    <button class="message_another">{{chat_messages[i].split(':')[1]}}</button>
-                  {% endif %}
-                </form>
-              </div>
-            {% endfor %}
+            {% if chat.messages != '' %}
+              {% for i in range(0, chat_messages|length - 1) %}
+                <div class="">
+                  <form class="form-displaying-messages" method="post" action="">
+                    {% if chat_messages[i].split(':')[0] == current_user.id %}
+                      <img src="{{ url_for('get_image', image_id=chat_messages[i].split(':')[0]|int) }}" alt="" class="img-message">
+                      <button class="message_me" name="message_id" value="{{ i }}--{{chat_messages[i].split(':')[1]}}">{{chat_messages[i].split(':')[1]}}</button>
+                    {% else %}
+                      <img src="{{ url_for('get_image', image_id=chat_messages[i].split(':')[0]|int) }}" alt="" class="img-message">
+                      <button class="message_another" name="message_id" value="{{ i }}--{{chat_messages[i].split(':')[1]}}">{{chat_messages[i].split(':')[1]}}</button>
+                    {% endif %}
+                  </form>
+                </div>
+              {% endfor %}
+            {% endif %}
           {% endif %}
         </div>
       </div>
@@ -207,10 +216,6 @@
                 localStorage.setItem(id, el.value);
               });
             }
-          });
-
-          document.getElementById('form-sending-messages').addEventListener('submit', () => {
-            localStorage.removeItem('input-field');
           });
 
           setInterval(function() {

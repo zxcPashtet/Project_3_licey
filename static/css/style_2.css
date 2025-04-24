@@ -241,3 +241,16 @@ position: absolute;
   height: 40px;
 }
 
+.delete-or-edit{
+  position: absolute;
+  margin-left: 1090px;
+}
+
+.delete-message{
+  width: 88px;
+  border-radius: 5px;
+}
+
+.edit-message{
+  border-radius: 5px;
+}

@@ -58,7 +58,6 @@ def main_page(id, chat_id=None):
                     created_chats_users[db_sess.query(User).filter(User.id == id_enemy).all()[0]] = int(i.messages_id2)
             created_chats_users = sorted(created_chats_users.items(), key=lambda item: item[1], reverse=True)
             created_chats_users = dict(created_chats_users)
-
         users = db_sess.query(User).filter((User.id == id)).first()
         background = users.topic.split()
         form = AboutForm()
@@ -190,6 +189,39 @@ def main_page(id, chat_id=None):
                                        created_chats=created_chats,
                                        chat_messages=chat.messages.split('---'),
                                        text=' ')
+            if request.form.get('message_id'):
+                global index
+                index = request.form.get('message_id')
+                return render_template('main.html',
+                                       form=form,
+                                       background=background,
+                                       chat=chat,
+                                       selected_user=selected_user[0],
+                                       created_chats_users=created_chats_users,
+                                       created_chats=created_chats,
+                                       chat_messages=chat.messages.split('---'),
+                                       text=' ',
+                                       delete_or_edit=True)
+
+            action = request.form.get('action')
+            if action == 'edit':
+                pass
+
+            if action == 'delete':
+                chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
+                tab_messages = chat.messages.split('---')
+                del tab_messages[int(index.split('--')[0])]
+                chat.messages = '---'.join(tab_messages)
+                db_sess.commit()
+                return render_template('main.html',
+                                       form=form,
+                                       background=background,
+                                       chat=chat,
+                                       selected_user=selected_user[0],
+                                       created_chats_users=created_chats_users,
+                                       created_chats=created_chats,
+                                       chat_messages=chat.messages.split('---'),
+                                       text=' ')
 
             if request.form.get('input-field'):
                 try:
@@ -205,7 +237,7 @@ def main_page(id, chat_id=None):
                     tab_messages = chat.messages
                     if tab_messages.split('---')[-1] != 'USER_HAS_BLOCKED_THIS_CHAT':
                         chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
-                        chat.messages = tab_messages + (f'---{current_user.id}:{request.form.get("input-field")}')
+                        chat.messages = tab_messages + (f'{current_user.id}:{request.form.get("input-field")}---')
                         if chat.id1_id2.split('_')[0] == str(current_user.id):
                             chat.messages_id1 += 1
                         else:
@@ -216,13 +248,13 @@ def main_page(id, chat_id=None):
             chat = db_sess.query(Message).filter(Message.id1_id2 == chat_id).first()
             if chat:
                 if int(chat.id1_id2.split('_')[0]) == int(current_user.id):
-                    selected_user = db_sess.query(User).filter(User.id == int(chat.id1_id2.split('_')[1])).first()
+                    selected_user = db_sess.query(User).filter(User.id == int(chat.id1_id2.split('_')[1])).all()
                 if int(chat.id1_id2.split('_')[1]) == int(current_user.id):
-                    selected_user = db_sess.query(User).filter(User.id == int(chat.id1_id2.split('_')[0])).first()
+                    selected_user = db_sess.query(User).filter(User.id == int(chat.id1_id2.split('_')[0])).all()
                 return render_template('main.html', form=form,
                                        background=background,
                                        chat=chat,
-                                       selected_user=selected_user,
+                                       selected_user=selected_user[0],
                                        created_chats_users=created_chats_users,
                                        created_chats=created_chats,
                                        chat_messages=chat.messages.split('---'),
