@@ -1,4 +1,4 @@
-<!DOCTYPE html>  
+<!DOCTYPE html>
   <html>
     <head>
       <title> Vertical Division</title>
@@ -216,6 +216,10 @@
                 localStorage.setItem(id, el.value);
               });
             }
+          });
+
+          document.getElementById('form-sending-messages').addEventListener('submit', () => {
+            localStorage.removeItem('input-field');
           });
 
           setInterval(function() {
