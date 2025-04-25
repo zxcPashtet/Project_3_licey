@@ -319,7 +319,7 @@ def register():
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
-        return redirect(f'/main/{current_user.id}')
+        return render_template('register.html', title='Регистрация', form=form, message='Вы зарегистрированы')
     return render_template('register.html', title='Регистрация', form=form)
 
 

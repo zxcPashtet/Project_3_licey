@@ -172,9 +172,11 @@
         <div class="block_right" style="background: {{ background[1] }}">
           {% if delete_or_edit %}
             <form class="delete-or-edit" method="post" action="">
-                <button class="edit-message" name="action" value="edit">Изменить</button>
+                <button class="edit-message" name="action" value="edit"
+                        style="background-color: #EFA94A;">Изменить</button>
                 <br>
-                <button class="delete-message" name="action" value="delete">Удалить</button>
+                <button class="delete-message" name="action" value="delete"
+                        style="background-color: #E4717A;">Удалить</button>
             </form>
           {% endif %}
           {% if chat %}
@@ -184,10 +186,12 @@
                   <form class="form-displaying-messages" method="post" action="">
                     {% if chat_messages[i].split(':')[0] == current_user.id %}
                       <img src="{{ url_for('get_image', image_id=chat_messages[i].split(':')[0]|int) }}" alt="" class="img-message">
-                      <button class="message_me" name="message_id" value="{{ i }}--{{chat_messages[i].split(':')[1]}}">{{chat_messages[i].split(':')[1]}}</button>
+                      <button class="message_me" name="message_id"
+                              value="{{ i }}--{{chat_messages[i].split(':')[1]}}">{{chat_messages[i].split(':')[1]}}</button>
                     {% else %}
                       <img src="{{ url_for('get_image', image_id=chat_messages[i].split(':')[0]|int) }}" alt="" class="img-message">
-                      <button class="message_another" name="message_id" value="{{ i }}--{{chat_messages[i].split(':')[1]}}">{{chat_messages[i].split(':')[1]}}</button>
+                      <button class="message_another" name="message_id"
+                              value="{{ i }}--{{chat_messages[i].split(':')[1]}}">{{chat_messages[i].split(':')[1]}}</button>
                     {% endif %}
                   </form>
                 </div>
