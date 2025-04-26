@@ -365,8 +365,8 @@ def login():
             login_user(user, remember=form.remember_me.data)
             send_email('OTP', otp, 'ega.firefox@gmail.com', form.email.data)
             return redirect(f'/verify')
-        return render_template('login.html', form=form, message='Неправильный логин или пароль')
-    return render_template('login.html', title='Авторизация', form=form)
+        return render_template('index.html', form=form, message='Неправильный логин или пароль')
+    return render_template('index.html', title='Авторизация', form=form)
 
 
 @app.route('/verify', methods=['POST', 'GET'])
