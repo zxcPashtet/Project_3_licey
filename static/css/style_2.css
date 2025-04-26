@@ -212,6 +212,12 @@ position: absolute;
   position: absolute
 }
 
+.form-edit-messages {
+  margin-top: 800px;
+  margin-left: 680px;
+  position: absolute
+}
+
 .input-field{
   width: 990px;
   height: 50px;
@@ -253,4 +259,10 @@ position: absolute;
 
 .edit-message{
   border-radius: 5px;
+}
+
+.block-unblock{
+  margin-top: 800px;
+  margin-left: 680px;
+  position: absolute
 }

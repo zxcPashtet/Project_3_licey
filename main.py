@@ -1,3 +1,5 @@
+import datetime
+
 from flask import Flask, render_template, redirect, request, abort, send_file, url_for
 from Data import db_session
 from Data.users import User
@@ -147,7 +149,8 @@ def main_page(id, chat_id=None):
                 if not chat:
                     new_chat = Message()
                     new_chat.id1_id2 = f'{current_user.id}_{selected_user[0].id}'
-                    new_chat.messages = ''
+                    new_chat.messages = '0:m1---0:m2---'
+                    new_chat.dates = 'd1---d2---'
                     db_sess.add(new_chat)
                     db_sess.commit()
                     chat = new_chat
@@ -163,32 +166,20 @@ def main_page(id, chat_id=None):
                                        created_chats_users=created_chats_users,
                                        created_chats=created_chats,
                                        chat_messages=chat.messages.split('---'),
-                                       text=' ')
-
-            if request.form.get('block'):
-                tab_messages = chat.messages
+                                       chat_dates=chat.dates.split('---'))
+            action2 = request.form.get('action2')
+            if action2 == 'block':
                 chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
-                chat.messages = tab_messages + ('---USER_HAS_BLOCKED_THIS_CHAT')
-                return render_template('main.html', form=form,
-                                       background=background,
-                                       chat=chat,
-                                       selected_user=selected_user[0],
-                                       created_chats_users=created_chats_users,
-                                       created_chats=created_chats,
-                                       chat_messages=chat.messages.split('---'),
-                                       text=' ')
+                chat.messages = chat.messages + ('0:USER_HAS_BLOCKED_THIS_CHAT---')
+                db_sess.commit()
+                return redirect(url_for('main_page', id=current_user.id, chat_id=chat.id1_id2))
 
-            if request.form.get('unblock'):
+            if action2 == 'unblock':
                 chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
-                chat.messages = chat.messages.split('---')[:-1]
-                return render_template('main.html', form=form,
-                                       background=background,
-                                       chat=chat,
-                                       selected_user=selected_user[0],
-                                       created_chats_users=created_chats_users,
-                                       created_chats=created_chats,
-                                       chat_messages=chat.messages.split('---'),
-                                       text=' ')
+                chat.messages = '---'.join(chat.messages.split('---')[:-2]) + '---'
+                db_sess.commit()
+                return redirect(url_for('main_page', id=current_user.id, chat_id=chat.id1_id2))
+
             if request.form.get('message_id'):
                 global index
                 index = request.form.get('message_id')
@@ -200,19 +191,15 @@ def main_page(id, chat_id=None):
                                        created_chats_users=created_chats_users,
                                        created_chats=created_chats,
                                        chat_messages=chat.messages.split('---'),
-                                       text=' ',
+                                       chat_dates=chat.dates.split('---'),
                                        delete_or_edit=True)
 
             action = request.form.get('action')
+            global text
             if action == 'edit':
-                pass
-
-            if action == 'delete':
                 chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
                 tab_messages = chat.messages.split('---')
-                del tab_messages[int(index.split('--')[0])]
-                chat.messages = '---'.join(tab_messages)
-                db_sess.commit()
+                text = tab_messages[int(index.split('--')[0])]
                 return render_template('main.html',
                                        form=form,
                                        background=background,
@@ -221,7 +208,41 @@ def main_page(id, chat_id=None):
                                        created_chats_users=created_chats_users,
                                        created_chats=created_chats,
                                        chat_messages=chat.messages.split('---'),
-                                       text=' ')
+                                       chat_dates=chat.dates.split('---'),
+                                       text=text.split(':')[1])
+
+            if action == 'delete':
+                chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
+                tab_messages = chat.messages.split('---')
+                tab_dates = chat.dates.split('---')
+                del tab_messages[int(index.split('--')[0])]
+                del tab_dates[int(index.split('--')[0])]
+                chat.messages = '---'.join(tab_messages)
+                chat.dates = '---'.join(tab_dates)
+                db_sess.commit()
+                return redirect(url_for('main_page', id=current_user.id, chat_id=chat.id1_id2))
+
+            if request.form.get('edit-field'):
+                try:
+                    print('' if chat else '')
+                except:
+                    return render_template('main.html', form=form,
+                                           background=background,
+                                           created_chats_users=created_chats_users,
+                                       created_chats=created_chats)
+
+                if (request.form.get('edit-field') != "'" and request.form.get('edit-field') != '"' and
+                        request.form.get('edit-field') != " "):
+                    tab_messages = chat.messages.split('---')
+                    tab_dates = chat.dates.split('---')
+                    if tab_messages[-2].split(':')[1] != 'USER_HAS_BLOCKED_THIS_CHAT':
+                        chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
+                        tab_messages[int(index.split('--')[0])] = text.split(':')[0] + ':' + request.form.get('edit-field')
+                        tab_dates[int(index.split('--')[0])] = (f'Изменено {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}---')
+                        chat.messages = '---'.join(tab_messages)
+                        chat.dates = '---'.join(tab_dates)
+                        db_sess.commit()
+                    return redirect(url_for('main_page', id=current_user.id, chat_id=chat.id1_id2))
 
             if request.form.get('input-field'):
                 try:
@@ -235,9 +256,11 @@ def main_page(id, chat_id=None):
                 if (request.form.get('input-field') != "'" and request.form.get('input-field') != '"' and
                         request.form.get('input-field') != " "):
                     tab_messages = chat.messages
-                    if tab_messages.split('---')[-1] != 'USER_HAS_BLOCKED_THIS_CHAT':
+                    tab_dates = chat.dates
+                    if tab_messages.split('---')[-2].split(':')[1] != 'USER_HAS_BLOCKED_THIS_CHAT':
                         chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
                         chat.messages = tab_messages + (f'{current_user.id}:{request.form.get("input-field")}---')
+                        chat.dates = tab_dates + (f'{datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}---')
                         if chat.id1_id2.split('_')[0] == str(current_user.id):
                             chat.messages_id1 += 1
                         else:
@@ -258,7 +281,7 @@ def main_page(id, chat_id=None):
                                        created_chats_users=created_chats_users,
                                        created_chats=created_chats,
                                        chat_messages=chat.messages.split('---'),
-                                       text=' ')
+                                       chat_dates=chat.dates.split('---'))
         else:
             return render_template('main.html', form=form,
                                    background=background,
