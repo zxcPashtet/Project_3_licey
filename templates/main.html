@@ -81,8 +81,10 @@
             </form>
           {% else %}
             <form method="post" class="form-sending-messages" id="form-sending-messages" action="" enctype="multipart/form-data">
-              <textarea class="input-field" placeholder="Сообщение..." name="input-field" id="input-field"></textarea>
-              <input class="btn btn-primary" type="submit" value="Отправить" style="margin-top: -42px; height: 48px;">
+              <div class="card-text-bg-primary-mb-3" style="background-color: {{ background[3] }}">
+                <textarea class="input-field" placeholder="Сообщение..." name="input-field" id="input-field"></textarea>
+                <input class="btn btn-primary" type="submit" value="Отправить" style="margin-top: -42px; height: 48px;">
+              </div>
             </form>
             <dialog id="userDialog" class="dialog-class" style="background-color: {{ background[2] }}">
               <div class="button-row">
@@ -178,38 +180,42 @@
               </form>
             </div>
           </dialog>
-        <div class="block_right" style="background: {{ background[1] }}">
-          {% if delete_or_edit %}
-            <form class="delete-or-edit" method="post" action="">
-                <button class="edit-message" name="action" value="edit"
-                        style="background-color: #EFA94A;">Изменить</button>
-                <br>
-                <button class="delete-message" name="action" value="delete"
-                        style="background-color: #E4717A;">Удалить</button>
-            </form>
-          {% endif %}
-          {% if chat %}
-            {% if chat.messages != '' %}
-              {% for i in range(2, chat_messages|length - 1) %}
-                <div class="">
-                  <form class="form-displaying-messages" method="post" action="">
-                    {% if chat_messages[i].split(':')[0] == current_user.id %}
-                      <img src="{{ url_for('get_image', image_id=chat_messages[i].split(':')[0]|int) }}" alt="" class="img-message">
-                      <button class="message_me" name="message_id"
-                              value="{{ i }}--{{chat_messages[i].split(':')[1]}}">{{chat_messages[i].split(':')[1]}}</button>
-                      <h5 style="color: #808080;">{{ chat_dates[i] }}</h5>
-                    {% else %}
-                      <img src="{{ url_for('get_image', image_id=chat_messages[i].split(':')[0]|int) }}" alt="" class="img-message">
-                      <button class="message_another" name="message_id"
-                              value="{{ i }}--{{chat_messages[i].split(':')[1]}}">{{chat_messages[i].split(':')[1]}}</button>
-                      <h5 style="color: #808080;">{{ chat_dates[i] }}</h5>
-                    {% endif %}
-                  </form>
-                </div>
-              {% endfor %}
+        {% if chat %}
+          <div class="block_right" style="background: {{ background[1] }}">
+            {% if delete_or_edit %}
+              <form class="delete-or-edit" method="post" action="">
+                  <button class="edit-message" name="action" value="edit"
+                          style="background-color: #EFA94A;">Изменить</button>
+                  <br>
+                  <button class="delete-message" name="action" value="delete"
+                          style="background-color: #E4717A;">Удалить</button>
+              </form>
             {% endif %}
-          {% endif %}
-        </div>
+            {% if chat %}
+              {% if chat.messages != '' %}
+                {% for i in range(2, chat_messages|length - 1) %}
+                  <div class="">
+                    <form class="form-displaying-messages" method="post" action="">
+                      {% if chat_messages[i].split(':')[0] == current_user.id %}
+                        <img src="{{ url_for('get_image', image_id=chat_messages[i].split(':')[0]|int) }}" alt="" class="img-message">
+                        <button class="message_me" name="message_id"
+                                value="{{ i }}--{{chat_messages[i].split(':')[1]}}">{{chat_messages[i].split(':')[1]}}</button>
+                        <h5 style="color: #808080;">{{ chat_dates[i] }}</h5>
+                      {% else %}
+                        <img src="{{ url_for('get_image', image_id=chat_messages[i].split(':')[0]|int) }}" alt="" class="img-message">
+                        <button class="message_another" name="message_id"
+                                value="{{ i }}--{{chat_messages[i].split(':')[1]}}">{{chat_messages[i].split(':')[1]}}</button>
+                        <h5 style="color: #808080;">{{ chat_dates[i] }}</h5>
+                      {% endif %}
+                    </form>
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endif %}
+          </div>
+        {% else %}
+          <div class="block_right" style="background: {{ background[1] }}; height: 1000px;">
+        {% endif %}
       </div>
       <script>
         const fields = ['input-field', 'user_search', 'edit-field'];

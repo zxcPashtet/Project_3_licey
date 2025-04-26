@@ -41,30 +41,32 @@ position: absolute;
 }
 
 .tema_button {
-  width: 200px;
-  font-size: 50px;
+  width: 150px;
+  font-size: 30px;
   border-radius: 30px;
   text-align: center;
-  font-size: 40px;
 }
 .file_button {
     cursor: pointer;
     width: 200px;
     display: inline-block;
-    font-size: 40px;
+    font-size: 30px;
     border-radius: 30px;
     text-align: center;
 }
 .file_button input[type="file"] {
     display: none;
 }
+.card-text-bg-primary-mb-3 {
+    height: 200px;
+    width: 1400px;
+ }
 .exit_button {
-  width: 420px;
-  font-size: 50px;
+  width: 320px;
+  font-size: 30px;
   border-radius: 30px;
   text-align: center;
-  font-size: 40px;
-  margin-left: 35px;
+  margin-left: 85px;
 }
 .card-text-1 {
     width: 300px;

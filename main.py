@@ -327,7 +327,7 @@ def register():
         db_sess = db_session.create_session()
         if db_sess.query(User).filter((User.email == form.email.data) | (User.login == form.login.data)).first():
             return render_template('register.html', title='Регистрация', form=form, message='Такой пользователь уже есть')
-        with open('static/img/maxresdefault.jpg', 'rb') as img_file:
+        with open('static/img/base_photo.webp', 'rb') as img_file:
             avatar_data = img_file.read()
         user = User(
             login=form.login.data,
@@ -352,8 +352,10 @@ def load_user(user_id):
     return db_sess.query(User).get(user_id)
 
 
+otp = ''
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    global otp
     form = LoginForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
@@ -362,18 +364,17 @@ def login():
             otp = generate_2fa_secret()
             login_user(user, remember=form.remember_me.data)
             send_email('OTP', otp, 'ega.firefox@gmail.com', form.email.data)
-            return redirect(f'/verify/{otp}')
+            return redirect(f'/verify')
         return render_template('login.html', form=form, message='Неправильный логин или пароль')
     return render_template('login.html', title='Авторизация', form=form)
 
 
-@app.route('/verify/<string:otp>', methods=['POST', 'GET'])
-def verify(otp):
+@app.route('/verify', methods=['POST', 'GET'])
+def verify():
     form = VerifyForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.id == current_user.id).first()
-        print(user.id, user.email, otp)
         if user and form.otp.data == otp:
             return redirect(f'/main/{user.id}')
     return render_template('verify.html', form=form)
