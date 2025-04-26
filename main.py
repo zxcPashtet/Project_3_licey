@@ -1,5 +1,4 @@
 import datetime
-
 from flask import Flask, render_template, redirect, request, abort, send_file, url_for
 from Data import db_session
 from Data.users import User
@@ -103,18 +102,6 @@ def main_page(id, chat_id=None):
                                        created_chats_users=created_chats_users,
                                        created_chats=created_chats)
 
-            if 'file' in request.files and request.files['file'].filename != '':
-                file = request.files['file']
-                avatar_data = file.read()
-                avatar_users = db_sess.query(User).filter((User.id == id)).first()
-                if avatar_users:
-                    avatar_users.avatar = avatar_data
-                    db_sess.commit()
-                return render_template('main.html', form=form,
-                                       background=background,
-                                       created_chats_users=created_chats_users,
-                                       created_chats=created_chats)
-
             if request.form.get('search'):
                 result = request.form['search']
                 found_users = {}
@@ -167,6 +154,19 @@ def main_page(id, chat_id=None):
                                        created_chats=created_chats,
                                        chat_messages=chat.messages.split('---'),
                                        chat_dates=chat.dates.split('---'))
+
+            if 'file' in request.files and request.files['file'].filename != '':
+                file = request.files['file']
+                avatar_data = file.read()
+                avatar_users = db_sess.query(User).filter((User.id == id)).first()
+                if avatar_users:
+                    avatar_users.avatar = avatar_data
+                    db_sess.commit()
+                return render_template('main.html', form=form,
+                                       background=background,
+                                       created_chats_users=created_chats_users,
+                                       created_chats=created_chats)
+
             action2 = request.form.get('action2')
             if action2 == 'block':
                 chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
