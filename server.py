@@ -12,6 +12,7 @@ from os.path import join, dirname, realpath
 from pyotp import TOTP
 import smtplib
 import secrets
+import blprint
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import io
@@ -166,6 +167,13 @@ def main_page(id, chat_id=None):
                                        background=background,
                                        created_chats_users=created_chats_users,
                                        created_chats=created_chats)
+            try:
+                print('' if chat else '')
+            except:
+                return render_template('main.html', form=form,
+                                       background=background,
+                                       created_chats_users=created_chats_users,
+                                       created_chats=created_chats)
 
             action2 = request.form.get('action2')
             if action2 == 'block':
@@ -215,6 +223,11 @@ def main_page(id, chat_id=None):
                 chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
                 tab_messages = chat.messages.split('---')
                 tab_dates = chat.dates.split('---')
+                temp = tab_messages[int(index.split('--')[0])].split(':')[0]
+                if chat.id1_id2.split('_')[0] == str(temp):
+                    chat.messages_id1 -= 1 if chat.messages_id1 != 0 else 0
+                else:
+                    chat.messages_id2 -= 1 if chat.messages_id1 != 0 else 0
                 del tab_messages[int(index.split('--')[0])]
                 del tab_dates[int(index.split('--')[0])]
                 chat.messages = '---'.join(tab_messages)
@@ -223,14 +236,6 @@ def main_page(id, chat_id=None):
                 return redirect(url_for('main_page', id=current_user.id, chat_id=chat.id1_id2))
 
             if request.form.get('edit-field'):
-                try:
-                    print('' if chat else '')
-                except:
-                    return render_template('main.html', form=form,
-                                           background=background,
-                                           created_chats_users=created_chats_users,
-                                       created_chats=created_chats)
-
                 if (request.form.get('edit-field') != "'" and request.form.get('edit-field') != '"' and
                         request.form.get('edit-field') != " "):
                     tab_messages = chat.messages.split('---')
@@ -238,21 +243,13 @@ def main_page(id, chat_id=None):
                     if tab_messages[-2].split(':')[1] != 'USER_HAS_BLOCKED_THIS_CHAT':
                         chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
                         tab_messages[int(index.split('--')[0])] = text.split(':')[0] + ':' + request.form.get('edit-field')
-                        tab_dates[int(index.split('--')[0])] = (f'Изменено {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}---')
+                        tab_dates[int(index.split('--')[0])] = (f'Изменено {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
                         chat.messages = '---'.join(tab_messages)
                         chat.dates = '---'.join(tab_dates)
                         db_sess.commit()
                     return redirect(url_for('main_page', id=current_user.id, chat_id=chat.id1_id2))
 
             if request.form.get('input-field'):
-                try:
-                    print('' if chat else '')
-                except:
-                    return render_template('main.html', form=form,
-                                           background=background,
-                                           created_chats_users=created_chats_users,
-                                       created_chats=created_chats)
-
                 if (request.form.get('input-field') != "'" and request.form.get('input-field') != '"' and
                         request.form.get('input-field') != " "):
                     tab_messages = chat.messages
@@ -381,6 +378,7 @@ def verify():
 
 
 def main():
+    app.register_blueprint(blprint.blueprint)
     db_session.global_init('db/forproject3.db')
     app.run()
 
