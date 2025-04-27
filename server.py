@@ -178,13 +178,15 @@ def main_page(id, chat_id=None):
             action2 = request.form.get('action2')
             if action2 == 'block':
                 chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
-                chat.messages = chat.messages + ('0:USER_HAS_BLOCKED_THIS_CHAT---')
+                chat.messages = chat.messages + (f'{current_user.id}:USER_HAS_BLOCKED_THIS_CHAT---')
                 db_sess.commit()
                 return redirect(url_for('main_page', id=current_user.id, chat_id=chat.id1_id2))
 
             if action2 == 'unblock':
                 chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
-                chat.messages = '---'.join(chat.messages.split('---')[:-2]) + '---'
+                block = chat.messages.split('---')[-2]
+                if block.split(':')[0] == current_user.id:
+                    chat.messages = '---'.join(chat.messages.split('---')[:-2]) + '---'
                 db_sess.commit()
                 return redirect(url_for('main_page', id=current_user.id, chat_id=chat.id1_id2))
 
