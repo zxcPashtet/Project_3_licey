@@ -18,7 +18,6 @@ position: absolute;
 .button-row1 button {
   display: inline-block;
   margin-right: 5px;
-  margin-top: 20px;
 }
 
 .button-row button {
