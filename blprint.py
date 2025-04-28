@@ -35,7 +35,8 @@ def get_chats():
 def get_chat(id1_id2):
     db_sess = db_session.create_session()
     chat = db_sess.query(Message).filter((Message.id1_id2 == id1_id2) |
-                                         (Message.id1_id2 == f'{id1_id2.split("_")[1]}_{id1_id2.split("_")[0]}')).first()
+                                         (
+                                                 Message.id1_id2 == f'{id1_id2.split("_")[1]}_{id1_id2.split("_")[0]}')).first()
     if chat:
         return jsonify(
             {
@@ -52,12 +53,13 @@ def get_chat(id1_id2):
 def get_chat_messages(id1_id2):
     db_sess = db_session.create_session()
     chat = db_sess.query(Message).filter((Message.id1_id2 == id1_id2) |
-                                         (Message.id1_id2 == f'{id1_id2.split("_")[1]}_{id1_id2.split("_")[0]}')).first()
+                                         (
+                                                 Message.id1_id2 == f'{id1_id2.split("_")[1]}_{id1_id2.split("_")[0]}')).first()
     if chat:
         return jsonify(
             {
                 'chat_messages':
-                    [{item: chat.messages.split('---')[item]} for item in range(2, len(chat.messages.split('---')) - 1)]
+                    [{item: chat.messages.split('���')[item]} for item in range(2, len(chat.messages.split('���')) - 1)]
             }
         )
     else:
@@ -69,14 +71,15 @@ def get_chat_messages(id1_id2):
 def get_chat_mess(id1_id2, index):
     db_sess = db_session.create_session()
     chat = db_sess.query(Message).filter((Message.id1_id2 == id1_id2) |
-                                         (Message.id1_id2 == f'{id1_id2.split("_")[1]}_{id1_id2.split("_")[0]}')).first()
+                                         (
+                                                 Message.id1_id2 == f'{id1_id2.split("_")[1]}_{id1_id2.split("_")[0]}')).first()
     if chat:
         print(index, len(chat.messages) - 1)
-        if len(chat.messages.split('---')) - 2 >= index:
+        if len(chat.messages.split('���')) - 2 >= index:
             return jsonify(
                 {
                     'chat_message':
-                        {index: chat.messages.split('---')[index]}
+                        {index: chat.messages.split('���')[index]}
                 }
             )
         else:
@@ -125,20 +128,22 @@ def new_message(id1_id2, message):
     if (message not in ['"', "'", '', ' ']):
         db_sess = db_session.create_session()
         chat = db_sess.query(Message).filter((Message.id1_id2 == id1_id2) |
-                                             (Message.id1_id2 == f'{id1_id2.split("_")[1]}_{id1_id2.split("_")[0]}')).first()
+                                             (
+                                                     Message.id1_id2 == f'{id1_id2.split("_")[1]}_{id1_id2.split("_")[0]}')).first()
         if not chat:
             new_chat = Message()
             new_chat.id1_id2 = id1_id2
-            new_chat.messages = '0:m1---0:m2---'
-            new_chat.dates = 'd1---d2---'
+            new_chat.messages = '0⁞m1���0⁞m2���'
+            new_chat.dates = 'd1���d2���'
             db_sess.add(new_chat)
             db_sess.commit()
             chat = new_chat
         tab_messages = chat.messages
         tab_dates = chat.dates
-        if tab_messages.split('---')[-2].split(':')[1] != 'USER_HAS_BLOCKED_THIS_CHAT':
-            chat.messages = tab_messages + (f'{current_user.id}:{message}---')
-            chat.dates = tab_dates + (f'{datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}---')
+        if tab_messages[-2].split('⁞')[
+            1] != 'USER_HAS_BLOCKED_THIS_CHAT' and '⁞' not in message and '���' not in message:
+            chat.messages = tab_messages + (f'{current_user.id}⁞{message}���')
+            chat.dates = tab_dates + (f'{datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}���')
             if chat.id1_id2.split('_')[0] == str(current_user.id):
                 chat.messages_id1 += 1
             else:
@@ -155,16 +160,18 @@ def edit_message(id1_id2, index, message):
     if (message not in ['"', "'", '', ' ']):
         db_sess = db_session.create_session()
         chat = db_sess.query(Message).filter((Message.id1_id2 == id1_id2) |
-                                             (Message.id1_id2 == f'{id1_id2.split("_")[1]}_{id1_id2.split("_")[0]}')).first()
+                                             (
+                                                     Message.id1_id2 == f'{id1_id2.split("_")[1]}_{id1_id2.split("_")[0]}')).first()
         if chat:
-            tab_messages = chat.messages.split('---')
-            tab_dates = chat.dates.split('---')
-            if tab_messages[-2].split(':')[1] != 'USER_HAS_BLOCKED_THIS_CHAT':
-                tab_messages[index] = tab_messages[index].split(':')[0] + ':' + message
+            tab_messages = chat.messages.split('���')
+            tab_dates = chat.dates.split('���')
+            if tab_messages[-2].split('⁞')[
+                1] != 'USER_HAS_BLOCKED_THIS_CHAT' and '⁞' not in message and '���' not in message:
+                tab_messages[index] = tab_messages[index].split('⁞')[0] + '⁞' + message
                 tab_dates[index] = (
                     f'Изменено {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
-                chat.messages = '---'.join(tab_messages)
-                chat.dates = '---'.join(tab_dates)
+                chat.messages = '���'.join(tab_messages)
+                chat.dates = '���'.join(tab_dates)
                 db_sess.commit()
                 return make_response(jsonify({'result': 'OK'}))
         else:
@@ -178,19 +185,20 @@ def edit_message(id1_id2, index, message):
 def delete_message(id1_id2, index):
     db_sess = db_session.create_session()
     chat = db_sess.query(Message).filter((Message.id1_id2 == id1_id2) |
-                                         (Message.id1_id2 == f'{id1_id2.split("_")[1]}_{id1_id2.split("_")[0]}')).first()
+                                         (
+                                                 Message.id1_id2 == f'{id1_id2.split("_")[1]}_{id1_id2.split("_")[0]}')).first()
     if chat:
-        tab_messages = chat.messages.split('---')
-        tab_dates = chat.dates.split('---')
-        temp = tab_messages[int(index.split('--')[0])].split(':')[0]
+        tab_messages = chat.messages.split('���')
+        tab_dates = chat.dates.split('���')
+        temp = tab_messages[int(index.split('��')[0])].split('⁞')[0]
         if chat.id1_id2.split('_')[0] == str(temp):
             chat.messages_id1 -= 1 if chat.messages_id1 != 0 else 0
         else:
             chat.messages_id2 -= 1 if chat.messages_id1 != 0 else 0
-        del tab_messages[int(index.split('--')[0])]
-        del tab_dates[int(index.split('--')[0])]
-        chat.messages = '---'.join(tab_messages)
-        chat.dates = '---'.join(tab_dates)
+        del tab_messages[int(index.split('��')[0])]
+        del tab_dates[int(index.split('��')[0])]
+        chat.messages = '���'.join(tab_messages)
+        chat.dates = '���'.join(tab_dates)
         db_sess.commit()
         return make_response(jsonify({'result': 'OK'}))
     else:
