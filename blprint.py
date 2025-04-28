@@ -194,7 +194,7 @@ def delete_message(id1_id2, index):
         if chat.id1_id2.split('_')[0] == str(temp):
             chat.messages_id1 -= 1 if chat.messages_id1 != 0 else 0
         else:
-            chat.messages_id2 -= 1 if chat.messages_id1 != 0 else 0
+            chat.messages_id2 -= 1 if chat.messages_id2 != 0 else 0
         del tab_messages[int(index.split('��')[0])]
         del tab_dates[int(index.split('��')[0])]
         chat.messages = '���'.join(tab_messages)

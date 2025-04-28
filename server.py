@@ -229,10 +229,10 @@ def main_page(id, chat_id=None):
                 tab_dates = chat.dates.split('���')
                 if tab_messages[int(index.split('��')[0])].split('⁞')[1] != 'USER_HAS_BLOCKED_THIS_CHAT':
                     temp = tab_messages[int(index.split('��')[0])].split('⁞')[0]
-                    if chat.id1_id2.split('_')[0] == str(temp):
+                    if str(chat.id1_id2.split('_')[0]) == str(temp):
                         chat.messages_id1 -= 1 if chat.messages_id1 != 0 else 0
                     else:
-                        chat.messages_id2 -= 1 if chat.messages_id1 != 0 else 0
+                        chat.messages_id2 -= 1 if chat.messages_id2 != 0 else 0
                     del tab_messages[int(index.split('��')[0])]
                     del tab_dates[int(index.split('��')[0])]
                     chat.messages = '���'.join(tab_messages)
