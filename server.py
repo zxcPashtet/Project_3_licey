@@ -49,7 +49,7 @@ def main_page(id, chat_id=None):
                                                            f'%_{current_user.id}')))).all()
         created_chats_users = {}
         for i in created_chats:
-            if i.messages != '':
+            if i.messages != '0⁞m1���0⁞m2���':
                 if i.id1_id2.split('_')[0] == str(current_user.id):
                     id_enemy = i.id1_id2.split('_')[1]
                 else:
