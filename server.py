@@ -135,7 +135,7 @@ def main_page(id, chat_id=None):
                 selected_user = db_sess.query(User).filter(User.login == button_value).all()
                 chat = db_sess.query(Message).filter((Message.id1_id2 == f'{current_user.id}_{selected_user[0].id}') |
                                                      (
-                                                                 Message.id1_id2 == f'{selected_user[0].id}_{current_user.id}')).first()
+                                                             Message.id1_id2 == f'{selected_user[0].id}_{current_user.id}')).first()
                 if not chat:
                     new_chat = Message()
                     new_chat.id1_id2 = f'{current_user.id}_{selected_user[0].id}'
@@ -264,7 +264,7 @@ def main_page(id, chat_id=None):
                     tab_dates = chat.dates
                     if tab_messages.split('���')[-2].split('⁞')[
                         1] != 'USER_HAS_BLOCKED_THIS_CHAT' and '⁞' not in request.form.get(
-                            'input-field') and '���' not in request.form.get('input-field'):
+                        'input-field') and '���' not in request.form.get('input-field'):
                         chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
                         chat.messages = tab_messages + (f'{current_user.id}⁞{request.form.get("input-field")}���')
                         chat.dates = tab_dates + (f'{datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}���')
