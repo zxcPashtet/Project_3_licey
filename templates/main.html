@@ -1,57 +1,51 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title> messager </title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',
+  <html>
+    <head>
+      <title> messager </title>
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',
   filename='css/style_2.css') }}">
-    <meta charset="utf-8">
-</head>
-<body style="overflow: hidden">
-<div>
-    <div class="block_left" style="background: {{ background[0] }}">
-        <div>
+      <meta charset="utf-8">
+    </head>
+    <body style="overflow: hidden">
+      <div>
+        <div class="block_left" style="background: {{ background[0] }}">
+          <div>
             <button type="button" class="learn_more" onclick="window.myDialog.show(); window.userDialog.close()"
-                    style="background:  {{ background[1] }}">☰
-            </button>
+                    style="background:  {{ background[1] }}">☰</button>
             <form method="POST" action="" class="form_user_search">
               <textarea class="user_search" name="search" id="user_search" style="background: {{ background[1] }}"
                         rows="1" placeholder="Поиск"></textarea>
-                <button class="user_search_submit" style="background: {{ background[1] }}" type="submit">Подтвердить
-                </button>
-                <a href="http://127.0.0.1:5000/main/{{ current_user.id }}">
-                    <button class="on_main" id="resetButton" style="background: {{ background[1] }}" type="button">
-                        Сбросить
-                    </button>
-                </a>
+              <button class="user_search_submit" style="background: {{ background[1] }}" type="submit">Подтвердить</button>
+              <a href="http://127.0.0.1:5000/main/{{ current_user.id }}">
+                <button class="on_main" id="resetButton" style="background: {{ background[1] }}" type="button">Сбросить</button>
+              </a>
             </form>
-        </div>
-        <div class="result_search">
+          </div>
+          <div class="result_search">
             {% if found_users %}
-            {% for i in found_users %}
-            <form method="post" action="">
-                <button class="found-users" style="background: {{ background[1] }}" name="user-button"
-                        value="{{ i.login }}">
+              {% for i in found_users %}
+                <form method ="post" action="">
+                  <button class="found-users" style="background: {{ background[1] }}" name="user-button"
+                          value="{{ i.login }}">
                     <span class="image-container">
                       <img src="{{ url_for('get_image', image_id=i.id) }}" alt="Иконка">
                     </span>
                     <span class="button-text">{{ i.name }} {{ i.surname }}</span>
                     {% if found_users[i] != 'None' and found_users[i] != 0%}
-                    <span class="number-of-messages">{{ found_users[i] }}</span>
+                      <span class="number-of-messages">{{ found_users[i] }}</span>
                     {% endif %}
-                </button>
-                <br>
-            </form>
-            {% endfor %}
+                  </button><br>
+                </form>
+              {% endfor %}
             {% endif %}
-        </div>
-        <div class="created-chats">
+          </div>
+          <div class="created-chats">
             {% if created_chats_users %}
-            {% for i in created_chats_users %}
-            <form method="post" action="">
-                <button class="found-users" style="background: {{ background[1] }}" name="user-button"
-                        value="{{ i.login }}">
+              {% for i in created_chats_users %}
+                <form method ="post" action="">
+                  <button class="found-users" style="background: {{ background[1] }}" name="user-button"
+                          value="{{ i.login }}">
                     <span class="image-container">
                       <img src="{{ url_for('get_image', image_id=i.id) }}" alt="Иконка">
                     </span>
@@ -59,202 +53,173 @@
                     {% if created_chats_users[i] != 0%}
                     <span class="number-of-messages">{{ created_chats_users[i] }}</span>
                     {% endif %}
-                </button>
-                <br>
-            </form>
-            {% endfor %}
+                  </button><br>
+                </form>
+              {% endfor %}
             {% endif %}
+          </div>
         </div>
-    </div>
-    {% if chat %}
-    <form class="block-unblock" method="post" action="">
-        {% if chat.messages.split('���')[-2].split('⁞')[1] != 'USER_HAS_BLOCKED_THIS_CHAT' %}
-        <button type="submit" class="btn btn-danger" name="action2" value="block"
-                style="margin-top: -1550px; margin-left: 1020px;">Заблокировать
-        </button>
-        {% else %}
-        <button type="submit" class="btn btn-success" name="action2" value="unblock"
-                style="margin-top: -1550px; margin-left: 1020px;">Разблокировать
-        </button>
-        {% endif %}
-    </form>
-    <div style="background-color: {{ background[3] }}" class="pofile-container">
-        <button class="inline-button"
-                style="background-color: {{ background[3] }}; border: none;"
-                onclick="window.userDialog.show(); window.myDialog.close(); window.settingsDialog.close()">
-            {{ selected_user.name }} {{ selected_user.surname }}
-        </button>
-    </div>
-    <div class="sending-messages">
-        {% if text %}
-        <form method="post" class="form-sending-messages" id="form-edit-messages" action=""
-              enctype="multipart/form-data">
-            <div class="card-text-bg-primary-mb-3" style="background-color: {{ background[3] }}">
-                <textarea class="input-field" placeholder="Изменить..." name="edit-field"
-                          id="edit-field">{{ text }}</textarea>
+        {% if chat %}
+          <form class="block-unblock" method="post" action="">
+            {% if chat.messages.split('---')[-2].split(':')[1] != 'USER_HAS_BLOCKED_THIS_CHAT' %}
+              <button type="submit" class="btn btn-danger" name="action2" value="block" style="margin-top: -1550px; margin-left: 1020px;">Заблокировать</button>
+            {% else %}
+              <button type="submit" class="btn btn-success" name="action2" value="unblock" style="margin-top: -1550px; margin-left: 1020px;">Разблокировать</button>
+            {% endif %}
+          </form>
+          <div style="background-color: {{ background[3] }}" class="pofile-container">
+            <button class="inline-button"
+                    style="background-color: {{ background[3] }}; border: none;"
+                    onclick="window.userDialog.show(); window.myDialog.close(); window.settingsDialog.close()">
+              {{ selected_user.name }} {{ selected_user.surname }}</button>
+          </div>
+          <div class="sending-messages">
+          {% if text %}
+            <form method="post" class="form-sending-messages" id="form-edit-messages" action="" enctype="multipart/form-data">
+              <div class="card-text-bg-primary-mb-3" style="background-color: {{ background[3] }}">
+                <textarea class="input-field" placeholder="Изменить..." name="edit-field" id="edit-field">{{ text }}</textarea>
                 <input class="btn btn-primary" type="submit" value="Изменить" style="margin-top: -42px; height: 48px;">
-            </div>
-        </form>
-        {% else %}
-        <form method="post" class="form-sending-messages" id="form-sending-messages" action=""
-              enctype="multipart/form-data">
-            <div class="card-text-bg-primary-mb-3" style="background-color: {{ background[3] }}">
+              </div>
+            </form>
+          {% else %}
+            <form method="post" class="form-sending-messages" id="form-sending-messages" action="" enctype="multipart/form-data">
+              <div class="card-text-bg-primary-mb-3" style="background-color: {{ background[3] }}">
                 <textarea class="input-field" placeholder="Сообщение..." name="input-field" id="input-field"></textarea>
                 <input class="btn btn-primary" type="submit" value="Отправить" style="margin-top: -42px; height: 48px;">
-            </div>
-        </form>
-        <dialog id="userDialog" class="dialog-class" style="background-color: {{ background[2] }}">
-            <div class="button-row">
+              </div>
+            </form>
+            <dialog id="userDialog" class="dialog-class" style="background-color: {{ background[2] }}">
+              <div class="button-row">
                 <button type="button" class="close_and_settings_button"
                         style="font-size: 30px; background-color: {{ background[3] }}; margin-left: 50px;"
-                        onclick="window.userDialog.close()">×
-                </button>
-            </div>
-            <div class="avatar_name">
+                        onclick="window.userDialog.close()">×</button>
+              </div>
+              <div class="avatar_name">
                 <img src="{{ url_for('get_image', image_id=selected_user.id) }}" alt="" class="round">
-            </div>
-            <p style="text-align: center;">{{ selected_user.name }} {{ selected_user.surname }}</p>
-            <div>
+              </div>
+                <p style="text-align: center;">{{ selected_user.name }} {{ selected_user.surname }}</p>
+              <div>
                 <p style="font-size: 20px; text-align: center;">Логин: {{ selected_user.login }}</p>
                 <p style="font-size: 30px; text-align: center;">Информация</p>
                 <div style="width: 500px; height: 300px; overflow-y: scroll; font-size: 30px;
                   scrollbar-color: #979aaa {{ background[2] }}">
-                    {{ selected_user.about_me }}
+                  {{ selected_user.about_me }}
                 </div>
+              </div>
+            </dialog>
+          {% endif %}
+        {% endif %}
+        </div>
+        <dialog id="myDialog" class="dialog-class" style="background-color: {{ background[2] }}">
+            <div class="button-row">
+              <button type="button" class="close_and_settings_button" style="background-color: {{ background[3] }}"
+                      onclick="window.settingsDialog.show()">⚙️</button>
+              <button type="button" class="close_and_settings_button" style="font-size: 30px; background-color: {{ background[3] }}"
+                      onclick="window.myDialog.close()">×</button>
             </div>
-        </dialog>
-        {% endif %}
-        {% endif %}
-    </div>
-    <dialog id="myDialog" class="dialog-class" style="background-color: {{ background[2] }}">
-        <div class="button-row">
-            <button type="button" class="close_and_settings_button" style="background-color: {{ background[3] }}"
-                    onclick="window.settingsDialog.show()">⚙️
-            </button>
-            <button type="button" class="close_and_settings_button"
-                    style="font-size: 30px; background-color: {{ background[3] }}"
-                    onclick="window.myDialog.close()">×
-            </button>
-        </div>
-        <div class="avatar_name">
-            <img src="{{ url_for('get_image', image_id=current_user.id) }}" alt="" class="round">
-        </div>
-        <p style="text-align: center;">{{ current_user.name }} {{ current_user.surname }}</p>
-        <div>
-            <p style="font-size: 20px; text-align: center;">Логин: {{ current_user.login }}</p>
-            <p style="font-size: 20px; text-align: center;">Почта: {{ current_user.email }}</p>
-            <p style="font-size: 30px; text-align: center;">Ваша информация</p>
-            <div style="width: 500px; height: 300px; overflow-y: scroll; font-size: 30px;
+            <div class="avatar_name">
+              <img src="{{ url_for('get_image', image_id=current_user.id) }}" alt="" class="round">
+            </div>
+                <p style="text-align: center;">{{ current_user.name }} {{ current_user.surname }}</p>
+            <div>
+              <p style="font-size: 20px; text-align: center;">Логин: {{ current_user.login }}</p>
+              <p style="font-size: 20px; text-align: center;">Почта: {{ current_user.email }}</p>
+              <p style="font-size: 30px; text-align: center;">Ваша информация</p>
+              <div style="width: 500px; height: 300px; overflow-y: scroll; font-size: 30px;
                 scrollbar-color: #979aaa {{ background[2] }}">
                 {{ current_user.about_me }}
+              </div>
             </div>
-        </div>
-        <div class="button-row1">
-            <form method="post" action="">
+            <div class="button-row1">
+              <form method ="post" action="">
                 <button type="submit" class="tema_button" name="light_tema" value="light_tema"
-                        style="background-color:  {{ background[3] }}">☀️ тема
-                </button>
+                        style="background-color:  {{ background[3] }}">☀️ тема</button>
                 <button type="submit" class="tema_button" name="night_tema" value="night_tema"
-                        style="background-color:  {{ background[3] }}">🌑 тема
-                </button>
-            </form>
-        </div>
-        <div><a href="http://127.0.0.1:5000/logout">
-            <button type="submit"
-                    class="exit_button"
-                    style="background-color: #CD5C5C">
-                Выйти
-            </button>
-        </a></div>
-    </dialog>
-    <dialog id="settingsDialog" class="dialog-class" style="background-color: {{ background[2] }}">
-        <button type="button" style="margin-left: 378px; font-size: 30px; background-color: {{ background[3] }}"
-                class="close_and_settings_button" onclick="window.settingsDialog.close()">×
-        </button>
-        <form action="" method="post">
-            {{ form.hidden_tag() }}
-            <p class="card-text-1">{{ form.name.label }}
+                        style="background-color:  {{ background[3] }}">🌑 тема</button>
+              </form>
+            </div>
+            <div><a href="http://127.0.0.1:5000/logout"><button type="submit"
+                                                                                    class="exit_button"
+                                                                                    style="background-color: #CD5C5C">
+              Выйти</button></a></div>
+          </dialog>
+        <dialog id="settingsDialog" class="dialog-class" style="background-color: {{ background[2] }}">
+            <button type="button" style="margin-left: 378px; font-size: 30px; background-color: {{ background[3] }}"
+                    class="close_and_settings_button" onclick="window.settingsDialog.close()">×</button>
+            <form action="" method="post">
+              {{ form.hidden_tag() }}
+              <p class="card-text-1">{{ form.name.label }}
                 {{ form.name(class="form-control") }} <br>
                 {% for error in form.name.error %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-            {% endfor %}</p>
-            <p class="card-text-1">{{ form.surname.label }}
+                    <p class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </p>
+                {% endfor %}</p>
+              <p class="card-text-1">{{ form.surname.label }}
                 {{ form.surname(class="form-control") }} <br>
                 {% for error in form.surname.error %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-            {% endfor %}</p>
-            <p class="card-text-1">{{ form.about_me.label }}
+                    <p class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </p>
+                {% endfor %}</p>
+                <p class="card-text-1">{{ form.about_me.label }}
                 {{ form.about_me(class="form-control") }} <br>
                 {% for error in form.about_me.error %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-            {% endfor %}</p>
-            <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
-        </form>
-        <div class="button-row1">
-            <form action="" method="POST"
-                  enctype="multipart/form-data">
+                    <p class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </p>
+                {% endfor %}</p>
+                <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+              </form>
+            <div class="button-row1">
+              <form action = "" method = "POST"
+                  enctype = "multipart/form-data">
                 <label class="file_button" style="background-color: {{ background[3] }}">
-                    <input type="file" name="file"/>Фото</label>
-                <a href="http://127.0.0.1:5000/main/{{ current_user.id }}">
-                    <button class="tema_button"
-                            style="background-color: {{ background[3] }}"
-                            type="submit">Загрузить
-                    </button>
-                </a>
-            </form>
-        </div>
-    </dialog>
-    {% if chat %}
-    <div class="block_right" style="background: {{ background[1] }}">
-        {% if delete_or_edit %}
-        <form class="delete-or-edit" method="post" action="">
-            <button class="edit-message" name="action" value="edit"
-                    style="background-color: #EFA94A;">Изменить
-            </button>
-            <br>
-            <button class="delete-message" name="action" value="delete"
-                    style="background-color: #E4717A;">Удалить
-            </button>
-        </form>
-        {% endif %}
+                  <input type="file" name="file" />Фото</label>
+              <a href="http://127.0.0.1:5000/main/{{ current_user.id }}"><button class="tema_button"
+                                                                                 style="background-color: {{ background[3] }}"
+                                                                                 type="submit">Загрузить</button></a>
+              </form>
+            </div>
+          </dialog>
         {% if chat %}
-        {% if chat.messages != '' %}
-        {% for i in range(2, chat_messages|length - 1) %}
-        <div class="">
-            <form class="form-displaying-messages" method="post" action="">
-                {% if chat_messages[i].split('⁞')[0]|int == current_user.id|int %}
-                <img src="{{ url_for('get_image', image_id=chat_messages[i].split('⁞')[0]|int) }}" alt=""
-                     class="img-message">
-                <button class="message_me" name="message_id"
-                        value="{{ i }}��{{chat_messages[i].split('⁞')[1]}}" style="background-color: #AFDAFC">
-                    {{chat_messages[i].split('⁞')[1]}}
-                </button>
-                <h5 style="color: #808080;">{{ chat_dates[i] }}</h5>
-                {% else %}
-                <img src="{{ url_for('get_image', image_id=chat_messages[i].split('⁞')[0]|int) }}" alt=""
-                     class="img-message">
-                <button class="message_another" name="message_id"
-                        value="{{ i }}��{{chat_messages[i].split('⁞')[1]}}">{{chat_messages[i].split('⁞')[1]}}
-                </button>
-                <h5 style="color: #808080;">{{ chat_dates[i] }}</h5>
-                {% endif %}
-            </form>
-        </div>
-        {% endfor %}
+          <div class="block_right" style="background: {{ background[1] }}">
+            {% if delete_or_edit %}
+              <form class="delete-or-edit" method="post" action="">
+                  <button class="edit-message" name="action" value="edit"
+                          style="background-color: #EFA94A;">Изменить</button>
+                  <br>
+                  <button class="delete-message" name="action" value="delete"
+                          style="background-color: #E4717A;">Удалить</button>
+              </form>
+            {% endif %}
+            {% if chat %}
+              {% if chat.messages != '' %}
+                {% for i in range(2, chat_messages|length - 1) %}
+                  <div class="">
+                    <form class="form-displaying-messages" method="post" action="">
+                      {% if chat_messages[i].split(':')[0]|int == current_user.id|int %}
+                        <img src="{{ url_for('get_image', image_id=chat_messages[i].split(':')[0]|int) }}" alt="" class="img-message">
+                        <button class="message_me" name="message_id"
+                                value="{{ i }}--{{chat_messages[i].split(':')[1]}}" style="background-color: #AFDAFC">{{chat_messages[i].split(':')[1]}}</button>
+                        <h5 style="color: #808080;">{{ chat_dates[i] }}</h5>
+                      {% else %}
+                        <img src="{{ url_for('get_image', image_id=chat_messages[i].split(':')[0]|int) }}" alt="" class="img-message">
+                        <button class="message_another" name="message_id"
+                                value="{{ i }}--{{chat_messages[i].split(':')[1]}}">{{chat_messages[i].split(':')[1]}}</button>
+                        <h5 style="color: #808080;">{{ chat_dates[i] }}</h5>
+                      {% endif %}
+                    </form>
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endif %}
+          </div>
+        {% else %}
+          <div class="block_right" style="background: {{ background[1] }}; height: 1000px;">
         {% endif %}
-        {% endif %}
-    </div>
-    {% else %}
-    <div class="block_right" style="background: {{ background[1] }}; height: 1000px;">
-        {% endif %}
-    </div>
-    <script>
+      </div>
+      <script>
         const fields = ['input-field', 'user_search', 'edit-field'];
 
         window.addEventListener('load', () => {
@@ -298,6 +263,6 @@
         setInterval(function() {
           location.reload();
         }, 60000);
-    </script>
-</body>
-</html>
+      </script>
+    </body>
+  </html>
