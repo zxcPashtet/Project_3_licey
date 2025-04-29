@@ -236,6 +236,9 @@ position: absolute;
 .message_me{
   font-size: 20px;
   border-radius: 12px;
+  max-width: 1100px;
+  white-space: normal;
+  word-break: break-word;
 }
 .message_another{
   font-size: 20px;

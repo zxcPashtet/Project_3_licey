@@ -49,7 +49,7 @@ def main_page(id, chat_id=None):
                                                            f'%_{current_user.id}')))).all()
         created_chats_users = {}
         for i in created_chats:
-            if i.messages != '0⁞m1���0⁞m2���':
+            if i.messages != '0⁞m1→→→0⁞m2→→→':
                 if i.id1_id2.split('_')[0] == str(current_user.id):
                     id_enemy = i.id1_id2.split('_')[1]
                 else:
@@ -139,8 +139,8 @@ def main_page(id, chat_id=None):
                 if not chat:
                     new_chat = Message()
                     new_chat.id1_id2 = f'{current_user.id}_{selected_user[0].id}'
-                    new_chat.messages = '0⁞m1���0⁞m2���'
-                    new_chat.dates = 'd1���d2���'
+                    new_chat.messages = '0⁞m1→→→0⁞m2→→→'
+                    new_chat.dates = 'd1→→→d2→→→'
                     db_sess.add(new_chat)
                     db_sess.commit()
                     chat = new_chat
@@ -155,8 +155,8 @@ def main_page(id, chat_id=None):
                                        selected_user=selected_user[0],
                                        created_chats_users=created_chats_users,
                                        created_chats=created_chats,
-                                       chat_messages=chat.messages.split('���'),
-                                       chat_dates=chat.dates.split('���'))
+                                       chat_messages=chat.messages.split('→→→'),
+                                       chat_dates=chat.dates.split('→→→'))
 
             if 'file' in request.files and request.files['file'].filename != '':
                 file = request.files['file']
@@ -180,15 +180,15 @@ def main_page(id, chat_id=None):
             action2 = request.form.get('action2')
             if action2 == 'block':
                 chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
-                chat.messages = chat.messages + (f'{current_user.id}⁞USER_HAS_BLOCKED_THIS_CHAT���')
+                chat.messages = chat.messages + (f'{current_user.id}⁞USER_HAS_BLOCKED_THIS_CHAT→→→')
                 db_sess.commit()
                 return redirect(url_for('main_page', id=current_user.id, chat_id=chat.id1_id2))
 
             if action2 == 'unblock':
                 chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
-                block = chat.messages.split('���')[-2]
+                block = chat.messages.split('→→→')[-2]
                 if int(block.split('⁞')[0]) == int(current_user.id):
-                    chat.messages = '���'.join(chat.messages.split('���')[:-2]) + '���'
+                    chat.messages = '→→→'.join(chat.messages.split('→→→')[:-2]) + '→→→'
                 db_sess.commit()
                 return redirect(url_for('main_page', id=current_user.id, chat_id=chat.id1_id2))
 
@@ -202,16 +202,16 @@ def main_page(id, chat_id=None):
                                        selected_user=selected_user[0],
                                        created_chats_users=created_chats_users,
                                        created_chats=created_chats,
-                                       chat_messages=chat.messages.split('���'),
-                                       chat_dates=chat.dates.split('���'),
+                                       chat_messages=chat.messages.split('→→→'),
+                                       chat_dates=chat.dates.split('→→→'),
                                        delete_or_edit=True)
 
             action = request.form.get('action')
             global text
             if action == 'edit':
                 chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
-                tab_messages = chat.messages.split('���')
-                text = tab_messages[int(index.split('��')[0])]
+                tab_messages = chat.messages.split('→→→')
+                text = tab_messages[int(index.split('→')[0])]
                 return render_template('main.html',
                                        form=form,
                                        background=background,
@@ -219,41 +219,41 @@ def main_page(id, chat_id=None):
                                        selected_user=selected_user[0],
                                        created_chats_users=created_chats_users,
                                        created_chats=created_chats,
-                                       chat_messages=chat.messages.split('���'),
-                                       chat_dates=chat.dates.split('���'),
+                                       chat_messages=chat.messages.split('→→→'),
+                                       chat_dates=chat.dates.split('→→→'),
                                        text=text.split('⁞')[1])
 
             if action == 'delete':
                 chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
-                tab_messages = chat.messages.split('���')
-                tab_dates = chat.dates.split('���')
-                if tab_messages[int(index.split('��')[0])].split('⁞')[1] != 'USER_HAS_BLOCKED_THIS_CHAT':
-                    temp = tab_messages[int(index.split('��')[0])].split('⁞')[0]
+                tab_messages = chat.messages.split('→→→')
+                tab_dates = chat.dates.split('→→→')
+                if tab_messages[int(index.split('→')[0])].split('⁞')[1] != 'USER_HAS_BLOCKED_THIS_CHAT':
+                    temp = tab_messages[int(index.split('→')[0])].split('⁞')[0]
                     if str(chat.id1_id2.split('_')[0]) == str(temp):
                         chat.messages_id1 -= 1 if chat.messages_id1 != 0 else 0
                     else:
                         chat.messages_id2 -= 1 if chat.messages_id2 != 0 else 0
-                    del tab_messages[int(index.split('��')[0])]
-                    del tab_dates[int(index.split('��')[0])]
-                    chat.messages = '���'.join(tab_messages)
-                    chat.dates = '���'.join(tab_dates)
+                    del tab_messages[int(index.split('→')[0])]
+                    del tab_dates[int(index.split('→')[0])]
+                    chat.messages = '→→→'.join(tab_messages)
+                    chat.dates = '→→→'.join(tab_dates)
                     db_sess.commit()
                 return redirect(url_for('main_page', id=current_user.id, chat_id=chat.id1_id2))
 
             if request.form.get('edit-field'):
                 if (request.form.get('edit-field') != "'" and request.form.get('edit-field') != '"' and
                         request.form.get('edit-field') != " "):
-                    tab_messages = chat.messages.split('���')
-                    tab_dates = chat.dates.split('���')
+                    tab_messages = chat.messages.split('→→→')
+                    tab_dates = chat.dates.split('→→→')
                     if tab_messages[-2].split('⁞')[1] != 'USER_HAS_BLOCKED_THIS_CHAT' and '⁞' not in request.form.get(
-                            'edit-field') and '���' not in request.form.get('edit-field'):
+                            'edit-field') and '→→→' not in request.form.get('edit-field'):
                         chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
-                        tab_messages[int(index.split('��')[0])] = text.split('⁞')[0] + '⁞' + request.form.get(
+                        tab_messages[int(index.split('→')[0])] = text.split('⁞')[0] + '⁞' + request.form.get(
                             'edit-field')
-                        tab_dates[int(index.split('��')[0])] = (
+                        tab_dates[int(index.split('→')[0])] = (
                             f'Изменено {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
-                        chat.messages = '���'.join(tab_messages)
-                        chat.dates = '���'.join(tab_dates)
+                        chat.messages = '→→→'.join(tab_messages)
+                        chat.dates = '→→→'.join(tab_dates)
                         db_sess.commit()
                     return redirect(url_for('main_page', id=current_user.id, chat_id=chat.id1_id2))
 
@@ -262,12 +262,12 @@ def main_page(id, chat_id=None):
                         request.form.get('input-field') != " "):
                     tab_messages = chat.messages
                     tab_dates = chat.dates
-                    if tab_messages.split('���')[-2].split('⁞')[
+                    if tab_messages.split('→→→')[-2].split('⁞')[
                         1] != 'USER_HAS_BLOCKED_THIS_CHAT' and '⁞' not in request.form.get(
-                        'input-field') and '���' not in request.form.get('input-field'):
+                        'input-field') and '→→→' not in request.form.get('input-field'):
                         chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
-                        chat.messages = tab_messages + (f'{current_user.id}⁞{request.form.get("input-field")}���')
-                        chat.dates = tab_dates + (f'{datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}���')
+                        chat.messages = tab_messages + (f'{current_user.id}⁞{request.form.get("input-field")}→→→')
+                        chat.dates = tab_dates + (f'{datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}→→→')
                         if chat.id1_id2.split('_')[0] == str(current_user.id):
                             chat.messages_id1 += 1
                         else:
@@ -287,8 +287,8 @@ def main_page(id, chat_id=None):
                                        selected_user=selected_user[0],
                                        created_chats_users=created_chats_users,
                                        created_chats=created_chats,
-                                       chat_messages=chat.messages.split('���'),
-                                       chat_dates=chat.dates.split('���'))
+                                       chat_messages=chat.messages.split('→→→'),
+                                       chat_dates=chat.dates.split('→→→'))
         else:
             return render_template('main.html', form=form,
                                    background=background,

@@ -68,7 +68,7 @@
     </div>
     {% if chat %}
     <form class="block-unblock" method="post" action="">
-        {% if chat.messages.split('���')[-2].split('⁞')[1] != 'USER_HAS_BLOCKED_THIS_CHAT' %}
+        {% if chat.messages.split('→→→')[-2].split('⁞')[1] != 'USER_HAS_BLOCKED_THIS_CHAT' %}
         <button type="submit" class="btn btn-danger" name="action2" value="block"
                 style="margin-top: -1550px; margin-left: 1020px;">Заблокировать
         </button>
@@ -232,7 +232,7 @@
                 <img src="{{ url_for('get_image', image_id=chat_messages[i].split('⁞')[0]|int) }}" alt=""
                      class="img-message">
                 <button class="message_me" name="message_id"
-                        value="{{ i }}��{{chat_messages[i].split('⁞')[1]}}" style="background-color: #AFDAFC">
+                        value="{{ i }}→{{chat_messages[i].split('⁞')[1]}}" style="background-color: #AFDAFC">
                     {{chat_messages[i].split('⁞')[1]}}
                 </button>
                 <h5 style="color: #808080;">{{ chat_dates[i] }}</h5>
@@ -240,7 +240,7 @@
                 <img src="{{ url_for('get_image', image_id=chat_messages[i].split('⁞')[0]|int) }}" alt=""
                      class="img-message">
                 <button class="message_another" name="message_id"
-                        value="{{ i }}��{{chat_messages[i].split('⁞')[1]}}">{{chat_messages[i].split('⁞')[1]}}
+                        value="{{ i }}→{{chat_messages[i].split('⁞')[1]}}">{{chat_messages[i].split('⁞')[1]}}
                 </button>
                 <h5 style="color: #808080;">{{ chat_dates[i] }}</h5>
                 {% endif %}
