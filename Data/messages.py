@@ -3,7 +3,7 @@ from .db_session import SQlAlchemyBase
 from sqlalchemy_serializer import SerializerMixin
 
 
-class Message(SQlAlchemyBase, SerializerMixin):
+class Message(SQlAlchemyBase, SerializerMixin):  # Описание модели данных 'messages'
     __tablename__ = 'messages'
     id1_id2 = sqlalchemy.Column(sqlalchemy.String, primary_key=True)
     messages = sqlalchemy.Column(sqlalchemy.Text, nullable=True)

@@ -5,7 +5,7 @@ from flask_login import UserMixin
 from sqlalchemy_serializer import SerializerMixin
 
 
-class User(SQlAlchemyBase, UserMixin, SerializerMixin):
+class User(SQlAlchemyBase, UserMixin, SerializerMixin):  # Описание модели данных 'users'
     __tablename__ = 'users'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
@@ -19,8 +19,8 @@ class User(SQlAlchemyBase, UserMixin, SerializerMixin):
     about_me = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
-    def set_password(self, password):
+    def set_password(self, password):  # Создание хэшированного пароля
         self.hashed_password = generate_password_hash(password)
 
-    def check_password(self, password):
+    def check_password(self, password):  # Проверка хэшированного пароля
         return check_password_hash(self.hashed_password, password)

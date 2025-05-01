@@ -15,7 +15,8 @@ def global_init(db_file):
         raise Exception('Необходимо указать имя файла базы данных')
     conn_str = f'sqlite:///{db_file.strip()}?check_same_thread=False'
     print(f"Подключение к базе данных по адресу {db_file}")
-    engin = sa.create_engine(conn_str, echo=False, pool_size=10, max_overflow=80)  # echo=True для того, чтобы выводить все запросы в консоль
+    engin = sa.create_engine(conn_str, echo=False, pool_size=10,
+                             max_overflow=80)  # echo=True для того, чтобы выводить все запросы в консоль
     __factory__ = orm.sessionmaker(bind=engin)
 
     from . import __all_models
@@ -23,6 +24,6 @@ def global_init(db_file):
     SQlAlchemyBase.metadata.create_all(engin)
 
 
-def create_session() -> Session: # -> значит, что наша функция возвращает конкретный тип(аннотация типа)
+def create_session() -> Session:  # -> значит, что наша функция возвращает конкретный тип(аннотация типа)
     global __factory__
     return __factory__()

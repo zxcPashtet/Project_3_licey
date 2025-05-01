@@ -1,6 +1,6 @@
 import flask
 from flask_login import login_required, current_user
-from flask import jsonify, make_response, request
+from flask import jsonify, make_response
 from Data import db_session
 from Data.users import User
 from Data.messages import Message
@@ -15,7 +15,7 @@ app = flask.Flask(__name__)
 app.config['SECRET_KEY'] = 'zxcmodePashtetAndShniga'
 
 
-@blueprint.route('/api/chats', methods=['GET'])
+@blueprint.route('/api/chats', methods=['GET'])  # Получение информации о всех чатах
 @login_required
 def get_chats():
     db_sess = db_session.create_session()
@@ -30,7 +30,7 @@ def get_chats():
     )
 
 
-@blueprint.route('/api/chat/<string:id1_id2>', methods=['GET'])
+@blueprint.route('/api/chat/<string:id1_id2>', methods=['GET'])  # Получение информации о конкретном чате
 @login_required
 def get_chat(id1_id2):
     if len(id1_id2.split('_')) != 2:
@@ -50,7 +50,7 @@ def get_chat(id1_id2):
         return make_response(jsonify({'error': 'Not found chat'}), 404)
 
 
-@blueprint.route('/api/chat/<string:id1_id2>/messages', methods=['GET'])
+@blueprint.route('/api/chat/<string:id1_id2>/messages', methods=['GET'])  # Получение сообщений из чата
 @login_required
 def get_chat_messages(id1_id2):
     if len(id1_id2.split('_')) != 2:
@@ -70,7 +70,7 @@ def get_chat_messages(id1_id2):
         return make_response(jsonify({'error': 'Not found chat'}), 404)
 
 
-@blueprint.route('/api/chat/<string:id1_id2>/message/<int:index>', methods=['GET'])
+@blueprint.route('/api/chat/<string:id1_id2>/message/<int:index>', methods=['GET'])  # Получение сообщения из чата
 @login_required
 def get_chat_mess(id1_id2, index):
     if len(id1_id2.split('_')) != 2:
@@ -93,7 +93,7 @@ def get_chat_mess(id1_id2, index):
         return make_response(jsonify({'error': 'Not found chat'}), 404)
 
 
-@blueprint.route('/api/users', methods=['GET'])
+@blueprint.route('/api/users', methods=['GET'])  # Получение информации о всех пользователях
 @login_required
 def users():
     db_sess = db_session.create_session()
@@ -107,7 +107,7 @@ def users():
     )
 
 
-@blueprint.route('/api/user/<int:index>', methods=['GET'])
+@blueprint.route('/api/user/<int:index>', methods=['GET'])  # Получение информации о конкретном пользователе
 @blueprint.route('/api/user/<string:index>', methods=['GET'])
 @login_required
 def user(index):
@@ -129,7 +129,7 @@ def user(index):
 
 @blueprint.route('/api/new_message/<string:id1_id2>/<string:message>', methods=['POST', 'GET'])
 @login_required
-def new_message(id1_id2, message):
+def new_message(id1_id2, message):  # Отправка нового сообщения в чат
     if len(id1_id2.split('_')) != 2:
         return make_response(jsonify({'error': 'Internal Server Error'}), 500)
     if (message not in ['"', "'", '', ' ']):
@@ -166,7 +166,7 @@ def new_message(id1_id2, message):
 
 @blueprint.route('/api/edit_message/<string:id1_id2>/<int:index>/<string:message>', methods=['PUT', 'GET'])
 @login_required
-def edit_message(id1_id2, index, message):
+def edit_message(id1_id2, index, message):  # Изменение сообщения в чате
     if len(id1_id2.split('_')) != 2:
         return make_response(jsonify({'error': 'Internal Server Error'}), 500)
     if (message not in ['"', "'", '', ' ']):
@@ -199,7 +199,7 @@ def edit_message(id1_id2, index, message):
 
 @blueprint.route('/api/delete_message/<string:id1_id2>/<int:index>', methods=['DELETE', 'GET'])
 @login_required
-def delete_message(id1_id2, index):
+def delete_message(id1_id2, index):  # Удаление сообщения из чата
     if len(id1_id2.split('_')) != 2:
         return make_response(jsonify({'error': 'Internal Server Error'}), 500)
     db_sess = db_session.create_session()
@@ -230,7 +230,7 @@ def delete_message(id1_id2, index):
         return make_response(jsonify({'error': 'Not found chat'}), 404)
 
 
-@app.errorhandler(404)
+@app.errorhandler(404)  # Далее обработка ошибок
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 

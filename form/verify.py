@@ -3,6 +3,6 @@ from wtforms import PasswordField, StringField, TextAreaField, SubmitField, Emai
 from wtforms.validators import DataRequired
 
 
-class VerifyForm(FlaskForm):
+class VerifyForm(FlaskForm):  # Форма для проверки кода двойной верификации
     otp = StringField('Код двухфакторной аунтефикации', validators=[DataRequired()])
     submit = SubmitField('Войти')

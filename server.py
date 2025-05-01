@@ -25,25 +25,25 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-@app.route('/')
+@app.route('/')  # При попытке зайти на страницу через /, функция переносит пользователя на /login
 def index():
     return redirect('/login')
 
 
-@app.route('/image/<int:image_id>')
+@app.route('/image/<int:image_id>')  # Эта функция возвращает аватарку пользователя по его id
 def get_image(image_id):
     db_sess = db_session.create_session()
     img = db_sess.query(User).filter((User.id == image_id)).first()
     return send_file(io.BytesIO(img.avatar), mimetype='image/png')
 
 
-@app.route('/main/<int:id>', methods=['GET', 'POST'])
-@app.route('/main/<int:id>/<string:chat_id>', methods=['GET', 'POST'])
+@app.route('/main/<int:id>', methods=['GET', 'POST'])  # Основная функция, в которой происходит обработка всех
+@app.route('/main/<int:id>/<string:chat_id>', methods=['GET', 'POST'])  # запросов с главной страницы
 @login_required
 def main_page(id, chat_id=None):
-    if current_user.is_authenticated:
+    if current_user.is_authenticated:  # Проверка на авторизацию пользователя, иначе перенос на /register
         db_sess = db_session.create_session()
-
+        # Получение уже начатых чатов и их сортировка(по количеству новых сообщений)
         created_chats = db_sess.query(Message).filter(((getattr(Message, 'id1_id2').ilike(f'{current_user.id}_%')) |
                                                        (getattr(Message, 'id1_id2').ilike(
                                                            f'%_{current_user.id}')))).all()
@@ -60,11 +60,13 @@ def main_page(id, chat_id=None):
                     created_chats_users[db_sess.query(User).filter(User.id == id_enemy).all()[0]] = int(i.messages_id2)
             created_chats_users = sorted(created_chats_users.items(), key=lambda item: item[1], reverse=True)
             created_chats_users = dict(created_chats_users)
+        # получение данных о вошедшем пользователе
         users = db_sess.query(User).filter((User.id == id)).first()
         background = users.topic.split()
         form = AboutForm()
-        if request.method == "GET":
+        if request.method == "GET":  # Если пришел GET запрос с сайта
             users = db_sess.query(User).filter((User.id == id)).first()
+            # Получение результатов отправленной формы aboutme для изменения профиля
             if users:
                 form.name.data = users.name
                 form.surname.data = users.surname
@@ -80,9 +82,9 @@ def main_page(id, chat_id=None):
                 return redirect(f'/main/{current_user.id}')
             else:
                 abort(404)
-        if request.method == 'POST':
-            if request.form.get("light_tema"):
-                background = ['#faedcd;', '#F9F9F9;', '#F2DDC6;', '#B39F7A;']
+        if request.method == 'POST':  # Если пришел POST запрос с сайта
+            if request.form.get("light_tema"):  # Если пользователь нажал на кнопку изменения цветовой темы, то в базе
+                background = ['#faedcd;', '#F9F9F9;', '#F2DDC6;', '#B39F7A;']  # данных меняется соответствующая колонка
                 users = db_sess.query(User).filter((User.id == id)).first()
                 if users:
                     users.topic = ' '.join(background)
@@ -92,8 +94,8 @@ def main_page(id, chat_id=None):
                                        created_chats_users=created_chats_users,
                                        created_chats=created_chats)
 
-            if request.form.get("night_tema"):
-                background = ['#23282b;', '#1d334a;', '#4a545c;', '#415a77;']
+            if request.form.get("night_tema"):  # Если пользователь нажал на кнопку изменения цветовой темы, то в базе
+                background = ['#23282b;', '#1d334a;', '#4a545c;', '#415a77;']  # данных меняется соответствующая колонка
                 users = db_sess.query(User).filter((User.id == id)).first()
                 if users:
                     users.topic = ' '.join(background)
@@ -103,9 +105,9 @@ def main_page(id, chat_id=None):
                                        created_chats_users=created_chats_users,
                                        created_chats=created_chats)
 
-            if request.form.get('search'):
-                result = request.form['search']
-                found_users = {}
+            if request.form.get('search'):  # если пользователь ввел что-то в строку поиска и нажал подтвердить, то
+                result = request.form['search']  # выполнится поиск в базе данных, и пользователю будут показаны
+                found_users = {}  # пользователи с похожим логином или почтой
                 for i in db_sess.query(User).filter(((getattr(User, 'login').ilike(f'{result}%')) &
                                                      (User.login != current_user.login) |
                                                      (getattr(User, 'email').ilike(f'{result}%')) &
@@ -128,23 +130,23 @@ def main_page(id, chat_id=None):
                                        found_users=found_users,
                                        background=background)
 
-            if request.form.get('user-button'):
-                global chat, selected_user
-                button_value = request.form.get('user-button')
-                db_sess = db_session.create_session()
-                selected_user = db_sess.query(User).filter(User.login == button_value).all()
+            if request.form.get('user-button'):  # Если пользователель нажал на кнопку чата(В левом окне), то
+                global chat, selected_user  # Если в базе данных еще нет записи об этом чате,
+                button_value = request.form.get('user-button')  # Эта запись будет создана иначе найдена
+                db_sess = db_session.create_session()  # Далее в глобальную переменную chat запишется экземпляр модели
+                selected_user = db_sess.query(User).filter(User.login == button_value).all()  # базы данных
                 chat = db_sess.query(Message).filter((Message.id1_id2 == f'{current_user.id}_{selected_user[0].id}') |
                                                      (
                                                              Message.id1_id2 == f'{selected_user[0].id}_{current_user.id}')).first()
-                if not chat:
-                    new_chat = Message()
+                if not chat:  # selected_user также экземпляр модели базы данных в котором содержится информация о
+                    new_chat = Message()  # Выбранном пользователе("собеседнике" в выбранном чате)
                     new_chat.id1_id2 = f'{current_user.id}_{selected_user[0].id}'
                     new_chat.messages = '0⁞m1→→→0⁞m2→→→'
                     new_chat.dates = 'd1→→→d2→→→'
                     db_sess.add(new_chat)
                     db_sess.commit()
                     chat = new_chat
-                if chat.id1_id2.split('_')[0] == str(current_user.id):
+                if chat.id1_id2.split('_')[0] == str(current_user.id):  # Обнуление количества новых сообщений
                     chat.messages_id2 = 0
                 else:
                     chat.messages_id1 = 0
@@ -158,9 +160,9 @@ def main_page(id, chat_id=None):
                                        chat_messages=chat.messages.split('→→→'),
                                        chat_dates=chat.dates.split('→→→'))
 
-            if 'file' in request.files and request.files['file'].filename != '':
-                file = request.files['file']
-                avatar_data = file.read()
+            if 'file' in request.files and request.files['file'].filename != '':  # Если с сайта пришел файл, то
+                file = request.files['file']  # Этот файл является новой аватаркой пользователя, т. к. иначе быть не
+                avatar_data = file.read()  # Может. Эта аватарка загружается в базу данных
                 avatar_users = db_sess.query(User).filter((User.id == id)).first()
                 if avatar_users:
                     avatar_users.avatar = avatar_data
@@ -169,8 +171,8 @@ def main_page(id, chat_id=None):
                                        background=background,
                                        created_chats_users=created_chats_users,
                                        created_chats=created_chats)
-            try:
-                print('' if chat else '')
+            try:  # Далее идет работа с выбранным чатом, поэтому на случай, если переменной chat еще нет, то
+                print('' if chat else '')  # Пользователя выкинет на главную страницу
             except:
                 return render_template('main.html', form=form,
                                        background=background,
@@ -178,22 +180,22 @@ def main_page(id, chat_id=None):
                                        created_chats=created_chats)
 
             action2 = request.form.get('action2')
-            if action2 == 'block':
+            if action2 == 'block':  # Если пользователь нажал на кнопку блокировки, то данный чат будет заблокирован
                 chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
                 chat.messages = chat.messages + (f'{current_user.id}⁞USER_HAS_BLOCKED_THIS_CHAT→→→')
-                db_sess.commit()
+                db_sess.commit()  # При блокировке чата из него можно только удалять сообщения, другое недоступно
                 return redirect(url_for('main_page', id=current_user.id, chat_id=chat.id1_id2))
 
-            if action2 == 'unblock':
-                chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
-                block = chat.messages.split('→→→')[-2]
+            if action2 == 'unblock':  # Если пользователь нажал на кнопку разблокировки, то данный чат будет
+                chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]  # Разблокирован
+                block = chat.messages.split('→→→')[-2]  # Это может сделать только тот, кто заблокировал чат
                 if int(block.split('⁞')[0]) == int(current_user.id):
                     chat.messages = '→→→'.join(chat.messages.split('→→→')[:-2]) + '→→→'
                 db_sess.commit()
                 return redirect(url_for('main_page', id=current_user.id, chat_id=chat.id1_id2))
 
-            if request.form.get('message_id'):
-                global index
+            if request.form.get('message_id'):  # Если пользователь нажал на сообщение, в глобальную переменную index
+                global index  # будет записан индекс этого сообщения
                 index = request.form.get('message_id')
                 return render_template('main.html',
                                        form=form,
@@ -208,9 +210,9 @@ def main_page(id, chat_id=None):
 
             action = request.form.get('action')
             global text
-            if action == 'edit':
-                chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
-                tab_messages = chat.messages.split('→→→')
+            if action == 'edit':  # Если пользователь нажал на кнопку изменения сообщения, то в html будет передана
+                chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]  # Переменная text
+                tab_messages = chat.messages.split('→→→')  # В которой хранится текст выбранного сообщения
                 text = tab_messages[int(index.split('→')[0])]
                 return render_template('main.html',
                                        form=form,
@@ -223,8 +225,8 @@ def main_page(id, chat_id=None):
                                        chat_dates=chat.dates.split('→→→'),
                                        text=text.split('⁞')[1])
 
-            if action == 'delete':
-                chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
+            if action == 'delete':  # Если пользователь нажал на кнопку удаления сообщения, сообщения и его дата будут
+                chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]  # Удалены из базы данных
                 tab_messages = chat.messages.split('→→→')
                 tab_dates = chat.dates.split('→→→')
                 if tab_messages[int(index.split('→')[0])].split('⁞')[1] != 'USER_HAS_BLOCKED_THIS_CHAT':
@@ -240,11 +242,11 @@ def main_page(id, chat_id=None):
                     db_sess.commit()
                 return redirect(url_for('main_page', id=current_user.id, chat_id=chat.id1_id2))
 
-            if request.form.get('edit-field'):
+            if request.form.get('edit-field'):  # Если пользователь подтвердил изменение сообщения, в базе данных
                 if (request.form.get('edit-field') != "'" and request.form.get('edit-field') != '"' and
-                        request.form.get('edit-field') != " "):
-                    tab_messages = chat.messages.split('→→→')
-                    tab_dates = chat.dates.split('→→→')
+                        request.form.get('edit-field') != " "):  # Изменилось это сообщение и его дата
+                    tab_messages = chat.messages.split('→→→')  # Работа с выбранным сообщением осуществляется по
+                    tab_dates = chat.dates.split('→→→')  # Средствам переменной index
                     if tab_messages[-2].split('⁞')[1] != 'USER_HAS_BLOCKED_THIS_CHAT' and '⁞' not in request.form.get(
                             'edit-field') and '→→→' not in request.form.get('edit-field'):
                         chat = db_sess.query(Message).filter(Message.id1_id2 == chat.id1_id2).all()[0]
@@ -257,9 +259,9 @@ def main_page(id, chat_id=None):
                         db_sess.commit()
                     return redirect(url_for('main_page', id=current_user.id, chat_id=chat.id1_id2))
 
-            if request.form.get('input-field'):
+            if request.form.get('input-field'):  # Если пользователь подтвердил отправку сообщения, в базу данных
                 if (request.form.get('input-field') != "'" and request.form.get('input-field') != '"' and
-                        request.form.get('input-field') != " "):
+                        request.form.get('input-field') != " "):  # Запишется это сообщение и его дата
                     tab_messages = chat.messages
                     tab_dates = chat.dates
                     if tab_messages.split('→→→')[-2].split('⁞')[
@@ -274,14 +276,14 @@ def main_page(id, chat_id=None):
                             chat.messages_id2 += 1
                         db_sess.commit()
                     return redirect(url_for('main_page', id=current_user.id, chat_id=chat.id1_id2))
-        if chat_id:
-            chat = db_sess.query(Message).filter(Message.id1_id2 == chat_id).first()
-            if chat:
-                if int(chat.id1_id2.split('_')[0]) == int(current_user.id):
+        if chat_id:  # После некоторых условий выполняется return redirect(url_for('main_page', id=current_user.id
+            chat = db_sess.query(Message).filter(Message.id1_id2 == chat_id).first()  # chat_id=chat.id1_id2))
+            if chat:  # Это условие выполняется как раз после этого redirecta
+                if int(chat.id1_id2.split('_')[0]) == int(current_user.id):  # Это нужно, чтобы предотвратить
                     selected_user = db_sess.query(User).filter(User.id == int(chat.id1_id2.split('_')[1])).all()
-                if int(chat.id1_id2.split('_')[1]) == int(current_user.id):
+                if int(chat.id1_id2.split('_')[1]) == int(current_user.id):  # Отправку последней отправленной формы
                     selected_user = db_sess.query(User).filter(User.id == int(chat.id1_id2.split('_')[0])).all()
-                return render_template('main.html', form=form,
+                return render_template('main.html', form=form,  # При обновлении страницы
                                        background=background,
                                        chat=chat,
                                        selected_user=selected_user[0],
@@ -297,15 +299,15 @@ def main_page(id, chat_id=None):
     return redirect('/register')
 
 
-@app.route('/logout')
+@app.route('/logout')  # Осуществляется для выхода пользователя из аккаунта
 @login_required
 def logout():
     logout_user()
     return redirect('/login')
 
 
-def generate_otp(totp_secret: str):
-    return TOTP(totp_secret).now()
+def generate_otp(totp_secret: str):  # В этой и двух следующих функциях происходит генерация и отправка кода
+    return TOTP(totp_secret).now()  # Двойной верификации
 
 
 def send_email(subject: str, body: str, from_addr: str, to_addr: str):
@@ -326,7 +328,7 @@ def generate_2fa_secret(length: int = 6) -> str:
     return secrets.token_urlsafe(length)
 
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST'])  # Регистрация пользователя(запись информации о нем в базу данных)
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
@@ -354,7 +356,7 @@ def register():
     return render_template('register.html', title='Регистрация', form=form)
 
 
-@login_manager.user_loader
+@login_manager.user_loader  # Загрузка пользователя из базы данных по его id, для доступа к нему по current_user
 def load_user(user_id):
     db_sess = db_session.create_session()
     return db_sess.query(User).get(user_id)
@@ -363,7 +365,7 @@ def load_user(user_id):
 otp = ''
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])  # Авторизация пользователя
 def login():
     global otp
     form = LoginForm()
@@ -379,7 +381,7 @@ def login():
     return render_template('index.html', title='Авторизация', form=form)
 
 
-@app.route('/verify', methods=['POST', 'GET'])
+@app.route('/verify', methods=['POST', 'GET'])  # Проверка кода двойной верификации после авторизации
 def verify():
     form = VerifyForm()
     if form.validate_on_submit():
@@ -391,7 +393,7 @@ def verify():
     return render_template('verify.html', form=form)
 
 
-def main():
+def main():  # Запуск
     app.register_blueprint(blprint.blueprint)
     db_session.global_init('db/forproject3.db')
     app.run()
