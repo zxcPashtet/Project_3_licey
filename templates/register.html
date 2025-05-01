@@ -2,51 +2,53 @@
 
 {% block content %}
 <form class="form" action="" method="post">
-     {{ form.hidden_tag() }}
+    {{ form.hidden_tag() }}
     <div class="card-text-bg-primary-mb-3" style="max-width: 40rem;">
-  <div class="card-header"><h1 id="Register_h1">Регистрация</h1></div>
-  <div class="card-body">
-    <p class="card-text-1">{{ form.email.label }}
-        {{ form.email(class="form-control", type="email") }} <br>
-        {% for error in form.email.error %}
+        <div class="card-header"><h1 id="Register_h1">Регистрация</h1></div>
+        <div class="card-body">
+            <p class="card-text-1">{{ form.email.label }}
+                {{ form.email(class="form-control", type="email") }} <br>
+                {% for error in form.email.error %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>
-        {% endfor %}</p>
-    <p class="card-text-1">{{ form.login.label }}
-        {{ form.login(class="form-control") }} <br>
-        {% for error in form.login.error %}
+            {% endfor %}</p>
+            <p class="card-text-1">{{ form.login.label }}
+                {{ form.login(class="form-control") }} <br>
+                {% for error in form.login.error %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>
-        {% endfor %}</p>
-      <p class="card-text-1">{{ form.password.label }}
-        {{ form.password(class="form-control", type="password") }} <br>
-        {% for error in form.password.error %}
+            {% endfor %}</p>
+            <p class="card-text-1">{{ form.password.label }}
+                {{ form.password(class="form-control", type="password") }} <br>
+                {% for error in form.password.error %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>
-        {% endfor %}</p>
-      <p class="card-text-1">{{ form.surname.label }}
-        {{ form.surname(class="form-control") }} <br>
-        {% for error in form.surname.error %}
+            {% endfor %}</p>
+            <p class="card-text-1">{{ form.surname.label }}
+                {{ form.surname(class="form-control") }} <br>
+                {% for error in form.surname.error %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>
-        {% endfor %}</p>
-      <p class="card-text-1">{{ form.name.label }}
-        {{ form.name(class="form-control") }} <br>
-        {% for error in form.name.error %}
+            {% endfor %}</p>
+            <p class="card-text-1">{{ form.name.label }}
+                {{ form.name(class="form-control") }} <br>
+                {% for error in form.name.error %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>
-        {% endfor %}</p>
-      <div class="button-row">
-          <button type="submit" class="button-changing-input-mode">Подтвердить</button>
-          <a href="http://127.0.0.1:5000/login">
-              <button type="button" class="button-changing-input-mode">Авторизация</button></a>
-      </div>
-    {{ message }}
-  </div>
+            {% endfor %}</p>
+            <div class="button-row">
+                <button type="submit" class="button-changing-input-mode">Подтвердить</button>
+                <button type="button" class="button-changing-input-mode" onclick="window.location.href='/login'">
+                    Авторизация
+                </button>
+            </div>
+            {{ message }}
+        </div>
+    </div>
 </form>
 {% endblock %}

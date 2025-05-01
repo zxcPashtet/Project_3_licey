@@ -4,19 +4,20 @@
 <form class="form" action="" method="post">
     {{ form.hidden_tag() }}
     <div class="card-text-bg-primary-mb-3" style="max-width: 40rem;">
-    <div class="card-header"><h1 id="Register_h1">Аутентификация</h1></div>
-    <div class="card-body">
-        <p class="card-text-1">
-            {{ form.otp.label }}<br>
-            {{ form.otp(class="form-control")}}<br>
-            {% for error in form.otp.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ error }}
-                </div>
+        <div class="card-header"><h1 id="Register_h1">Аутентификация</h1></div>
+        <div class="card-body">
+            <p class="card-text-1">
+                {{ form.otp.label }}<br>
+                {{ form.otp(class="form-control")}}<br>
+                {% for error in form.otp.errors %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
             {% endfor %}
-        </p>
-        <div class="button-row1">
-            {{ form.submit(type="submit", class="button-changing-input-mode")}}
+            </p>
+            <div class="button-row1">
+                {{ form.submit(type="submit", class="button-changing-input-mode")}}
+            </div>
         </div>
     </div>
 </form>
