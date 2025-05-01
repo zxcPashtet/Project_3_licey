@@ -149,15 +149,15 @@ def new_message(id1_id2, message):
         tab_dates = chat.dates
         if tab_messages.split('→→→')[-2].split('⁞')[
             1] != 'USER_HAS_BLOCKED_THIS_CHAT' and '⁞' not in message and '→→→' not in message:
-                chat = db_sess.query(Message).filter(Message.id1_id2 == id1_id2).all()[0]
-                chat.messages = tab_messages + (f'{current_user.id}⁞{message}→→→')
-                chat.dates = tab_dates + (f'{datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}→→→')
-                if chat.id1_id2.split('_')[0] == str(current_user.id):
-                    chat.messages_id1 += 1
-                else:
-                    chat.messages_id2 += 1
-                db_sess.commit()
-                return make_response(jsonify({'result': 'OK'}))
+            chat = db_sess.query(Message).filter(Message.id1_id2 == id1_id2).all()[0]
+            chat.messages = tab_messages + (f'{current_user.id}⁞{message}→→→')
+            chat.dates = tab_dates + (f'{datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}→→→')
+            if chat.id1_id2.split('_')[0] == str(current_user.id):
+                chat.messages_id1 += 1
+            else:
+                chat.messages_id2 += 1
+            db_sess.commit()
+            return make_response(jsonify({'result': 'OK'}))
         else:
             return make_response(jsonify({'error': 'Internal Server Error'}), 500)
     else:
@@ -180,13 +180,13 @@ def edit_message(id1_id2, index, message):
             if len(chat.messages.split('→→→')) - 2 >= index:
                 if tab_messages[-2].split('⁞')[
                     1] != 'USER_HAS_BLOCKED_THIS_CHAT' and '⁞' not in message and '→→→' not in message:
-                        tab_messages[index] = tab_messages[index].split('⁞')[0] + '⁞' + message
-                        tab_dates[index] = (
-                            f'Изменено {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
-                        chat.messages = '→→→'.join(tab_messages)
-                        chat.dates = '→→→'.join(tab_dates)
-                        db_sess.commit()
-                        return make_response(jsonify({'result': 'OK'}))
+                    tab_messages[index] = tab_messages[index].split('⁞')[0] + '⁞' + message
+                    tab_dates[index] = (
+                        f'Изменено {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
+                    chat.messages = '→→→'.join(tab_messages)
+                    chat.dates = '→→→'.join(tab_dates)
+                    db_sess.commit()
+                    return make_response(jsonify({'result': 'OK'}))
                 else:
                     return make_response(jsonify({'error': 'Internal Server Error'}), 500)
             else:
@@ -243,4 +243,3 @@ def bad_request(error):
 @app.errorhandler(500)
 def server_error(error):
     return make_response(jsonify({'error': 'Internal Server Error'}), 500)
-
